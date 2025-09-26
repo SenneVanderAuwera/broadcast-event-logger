@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Nav from "$lib/components/layout/nav.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
 
-	import Archive from "@lucide/svelte/icons/archive";
+	import { Button } from "$lib/components/ui/button/index.js";
 
 	import type { PageProps } from "./$types";
 
@@ -11,6 +10,6 @@
 
 <Nav>
 	{#snippet right()}
-		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
+		<Button href="/recordings">Back</Button>
 	{/snippet}
 </Nav>
