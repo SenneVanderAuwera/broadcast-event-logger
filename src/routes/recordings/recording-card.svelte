@@ -1,14 +1,25 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Card from "$lib/components/ui/card/index.js";
 	import Archive from "@lucide/svelte/icons/archive";
+	import gsap from "gsap";
+
+	let { active = false } = $props();
+	let card: HTMLDivElement;
+
+	$effect(() => {
+		if (active) {
+			gsap.set(card, { backgroundColor: "#ffffff", border: "1px solid red", color: "red" });
+			gsap.to(card, { backgroundColor: "red", color: "white", yoyo: true, repeat: -1, duration: 1, ease: "power1.inOut" });
+		}
+	});
 </script>
 
-<a href="##">
-	<Card.Root class="relative">
-		<Card.Header class="text-center">
-			<Card.Title>File name - 15:00:00 UTC</Card.Title>
-		</Card.Header>
-		<Button href="#" class="absolute -right-10 top-1/2 -translate-y-1/2" size="icon" variant="destructive"><Archive /></Button>
-	</Card.Root>
-</a>
+<div class="flex items-center gap-2">
+	<a class="flex-1" href="##">
+		<div class="flex justify-between items-center p-4 rounded-md text-white shadow-lg" bind:this={card}>
+			<span>File name</span>
+			<span>00:00:00 UTC</span>
+		</div>
+	</a>
+	<Button variant="destructive" size="icon"><Archive /></Button>
+</div>
