@@ -1,5 +1,5 @@
 import { POCKETBASE_URL } from "$env/static/private";
-import { json, type Handle } from "@sveltejs/kit";
+import { type Handle } from "@sveltejs/kit";
 import PocketBase from "pocketbase";
 
 export const handle: Handle = async ({ event, resolve }) => {
