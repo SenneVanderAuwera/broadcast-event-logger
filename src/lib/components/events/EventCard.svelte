@@ -6,13 +6,18 @@
 	let color = $derived(eventTypeColors[type]);
 </script>
 
-<div class={["rounded-lg shadow-md p-4 space-y-3", color]}>
-	<header class="flex justify-between">
-		<span class="text-xl font-bold"> Event title </span>
-		<span> Event date </span>
-	</header>
+<div class="flex items-center gap-5">
+	<div>timestamp</div>
 
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem quas inventore tempore voluptas temporibus consequuntur? Assumenda, et repellendus error eligendi voluptatibus magnam ab nobis provident, laudantium magni maxime? Ipsam, minima.
-	</p>
+	<div class={["rounded-lg shadow-md p-4 space-y-3", color]}>
+		<header class="flex justify-between">
+			<span class="text-xl font-bold"> Event title </span>
+			<span> Event date </span>
+		</header>
+
+		<p>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem quas inventore tempore voluptas temporibus consequuntur? Assumenda, et repellendus error eligendi voluptatibus magnam ab nobis provident, laudantium magni maxime? Ipsam,
+			minima.
+		</p>
+	</div>
 </div>
