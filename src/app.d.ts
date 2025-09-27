@@ -1,4 +1,4 @@
-import PocketBase from "pocketbase";
+import type { TypedPocketBase } from "$lib/pocketbase/types";
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -6,7 +6,7 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pb: PocketBase;
+			pb: TypedPocketBase;
 		}
 		// interface PageData {}
 		// interface PageState {}
