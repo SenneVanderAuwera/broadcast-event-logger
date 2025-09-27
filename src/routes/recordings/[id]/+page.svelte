@@ -1,12 +1,23 @@
 <script lang="ts">
 	import EventCard from "$lib/components/events/EventCard.svelte";
+	import RecordingCard from "$lib/components/events/RecordingCard.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
+	import { Separator } from "$lib/components/ui/separator/index.js";
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
 </script>
+
+{#snippet separator()}
+	<div class="flex">
+		<div class="basis-48"></div>
+		<div class="flex-1">
+			<Separator />
+		</div>
+	</div>
+{/snippet}
 
 <Nav>
 	{#snippet right()}
@@ -16,7 +27,17 @@
 </Nav>
 
 <div class="w-2/3 mx-auto">
-	<div class="w-full flex flex-col">
-		<EventCard type="warning"></EventCard>
+	<div class="w-full flex flex-col gap-2">
+		<RecordingCard></RecordingCard>
+
+		{@render separator()}
+
+		<div class="flex flex-col gap-1">
+			<EventCard type="warning"></EventCard>
+			<EventCard type="info"></EventCard>
+			<EventCard type="danger"></EventCard>
+		</div>
+
+		{@render separator()}
 	</div>
 </div>
