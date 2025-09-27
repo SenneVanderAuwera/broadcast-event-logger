@@ -26,7 +26,7 @@
 	{/snippet}
 </Nav>
 
-<div class="w-2/3 mx-auto">
+<div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
 		<RecordingCard></RecordingCard>
 
