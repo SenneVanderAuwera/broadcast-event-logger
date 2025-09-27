@@ -9,6 +9,7 @@
 	let { data }: PageProps = $props();
 
 	let active = $state(false);
+	$inspect(data.recordings);
 </script>
 
 <Nav>
@@ -20,8 +21,8 @@
 
 <div class="w-2/3 mx-auto">
 	<div class="w-full mx-auto flex flex-col gap-2 mt-10">
-		<RecordingCard {active}></RecordingCard>
-		<RecordingCard></RecordingCard>
-		<RecordingCard></RecordingCard>
+		{#each data.recordings as recording}
+			<RecordingCard data={recording}></RecordingCard>
+		{/each}
 	</div>
 </div>
