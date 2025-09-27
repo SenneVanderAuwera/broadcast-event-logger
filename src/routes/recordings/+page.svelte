@@ -7,9 +7,6 @@
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
-
-	let active = $state(false);
-	$inspect(data.recordings);
 </script>
 
 <Nav>
