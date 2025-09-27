@@ -7,6 +7,8 @@
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
+
+	let active = $state(false);
 </script>
 
 <Nav>
@@ -17,7 +19,9 @@
 </Nav>
 
 <div class="w-2/3 mx-auto">
-	<div class="w-1/2 mx-auto flex flex-col gap-2 mt-10">
-		<RecordingCard active={true}></RecordingCard>
+	<div class="w-full mx-auto flex flex-col gap-2 mt-10">
+		<RecordingCard {active}></RecordingCard>
+		<RecordingCard></RecordingCard>
+		<RecordingCard></RecordingCard>
 	</div>
 </div>

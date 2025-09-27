@@ -12,7 +12,7 @@
 			<div class={["flex justify-between items-center p-4 rounded-md shadow-lg border", { "animate-pulse bg-destructive text-white": active }]}>
 				<span>Recording name</span>
 				<span>File name</span>
-				<span>00:00:00 UTC</span>
+				<span>Date 00:00:00 UTC</span>
 			</div>
 		</a>
 	</div>
