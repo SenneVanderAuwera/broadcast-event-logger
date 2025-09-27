@@ -1,5 +1,5 @@
 <script lang="ts">
-	import RecordingCard from "./recording-card.svelte";
+	import RecordingCard from "./components/recording-card.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
