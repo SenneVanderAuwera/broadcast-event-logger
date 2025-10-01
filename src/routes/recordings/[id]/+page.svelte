@@ -34,7 +34,7 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingCard></RecordingCard>
+		<RecordingCard data={data.recording}></RecordingCard>
 
 		{@render separator()}
 
