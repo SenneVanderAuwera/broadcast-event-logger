@@ -9,6 +9,11 @@
 	import { stopRecording } from "$lib/utils/recording";
 	import type { PageProps } from "./$types";
 
+	import Info from "@lucide/svelte/icons/info";
+	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
+	import Ban from "@lucide/svelte/icons/ban";
+	import { eventTypeColors } from "$lib/components/events/colors";
+
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
@@ -45,5 +50,14 @@
 		</div>
 
 		{@render separator()}
+
+		<div class="flex">
+			<div class="basis-48"></div>
+			<div class="flex-1">
+				<Button size="icon" class={[eventTypeColors.info]}><Info /></Button>
+				<Button size="icon" class={[eventTypeColors.warning]}><TriangleAlert /></Button>
+				<Button size="icon" class={[eventTypeColors.error]}><Ban /></Button>
+			</div>
+		</div>
 	</div>
 </div>

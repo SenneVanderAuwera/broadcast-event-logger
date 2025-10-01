@@ -15,7 +15,7 @@
 <div class="flex items-center border shadow-md rounded-lg print:border-4 print:shadow-none">
 	<div class="basis-48 text-center">{duration.toFormat("hh:mm:ss")}</div>
 
-	<div class={["rounded-lg p-4 space-y-3 flex-1 print:p-1", color]}>
+	<div class={["rounded-lg p-4 space-y-3 flex-1 print:p-1 pointer-events-none", color]}>
 		<header class="flex justify-between mb-0">
 			<span class="text-xl font-bold"> {data.title} </span>
 			<span> {DateTime.fromSQL(data.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
