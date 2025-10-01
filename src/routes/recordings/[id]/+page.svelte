@@ -9,7 +9,7 @@
 	import { stopRecording } from "$lib/utils/recording";
 	import type { PageProps } from "./$types";
 
-	import { eventTypeColors } from "$lib/components/events/colors";
+	import { eventStyles } from "$lib/components/events/colors";
 	import { pb } from "$lib/pocketbase";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
@@ -89,9 +89,9 @@
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
-					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
 				</div>
 			</div>
 		{:else}
