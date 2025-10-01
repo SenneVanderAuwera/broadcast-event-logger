@@ -9,20 +9,21 @@
 	import { stopRecording } from "$lib/utils/recording";
 	import type { PageProps } from "./$types";
 
-	import Info from "@lucide/svelte/icons/info";
-	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
-	import Ban from "@lucide/svelte/icons/ban";
 	import { eventTypeColors } from "$lib/components/events/colors";
-	import { createNewEvent } from "$lib/utils/events";
-	import { DateTime } from "luxon";
-	import { onMount } from "svelte";
 	import { pb } from "$lib/pocketbase";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
+	import { createNewEvent } from "$lib/utils/events";
+	import Ban from "@lucide/svelte/icons/ban";
+	import Info from "@lucide/svelte/icons/info";
+	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
+	import { DateTime } from "luxon";
+	import { onMount } from "svelte";
 
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
 	let events = $state(data.events);
+	let loadedRecording = $state(data.recording);
 
 	onMount(() => {
 		pb.collection("event").subscribe("*", ({ action, record }) => {
@@ -31,7 +32,14 @@
 			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
 		});
 
-		return () => pb.collection("event").unsubscribe("*");
+		pb.collection("recording").subscribe(loadedRecording.id, ({ action, record }) => {
+			if (action === "update") loadedRecording = record;
+		});
+
+		return () => {
+			pb.collection("event").unsubscribe("*");
+			pb.collection("recording").unsubscribe("*");
+		};
 	});
 </script>
 
@@ -57,13 +65,13 @@
 	<div class="w-full flex flex-col gap-2">
 		<RecordingCard>
 			{#snippet left()}
-				<span class="text-xl font-bold"> {data.recording.recording_name} </span>
+				<span class="text-xl font-bold"> {loadedRecording.recording_name} </span>
 			{/snippet}
 			{#snippet center()}
-				<span class="text-xl font-bold"> {data.recording.filename} </span>
+				<span class="text-xl font-bold"> {loadedRecording.filename} </span>
 			{/snippet}
 			{#snippet right()}
-				<span> {DateTime.fromSQL(data.recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+				<span> {DateTime.fromSQL(loadedRecording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 			{/snippet}
 		</RecordingCard>
 
@@ -71,7 +79,7 @@
 
 		<div class="flex flex-col gap-1">
 			{#each events as event}
-				<EventCard recording={data.recording} data={event} />
+				<EventCard recording={loadedRecording} data={event} />
 			{/each}
 		</div>
 
@@ -81,9 +89,9 @@
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
-					<Button onclick={() => createNewEvent(data.recording.id, "info", DateTime.now())} size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(data.recording.id, "warning", DateTime.now())} size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(data.recording.id, "error", DateTime.now())} size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
 				</div>
 			</div>
 		{:else}
@@ -92,10 +100,10 @@
 					<span class="text-xl font-bold"> Recording end </span>
 				{/snippet}
 				{#snippet center()}
-					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(data.recording.start), DateTime.fromSQL(data.recording.stop)).toFormat("hh:mm:ss")}</span>
+					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(loadedRecording.start), DateTime.fromSQL(loadedRecording.stop)).toFormat("hh:mm:ss")}</span>
 				{/snippet}
 				{#snippet right()}
-					<span> {DateTime.fromSQL(data.recording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+					<span> {DateTime.fromSQL(loadedRecording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 				{/snippet}
 			</RecordingCard>
 		{/if}
