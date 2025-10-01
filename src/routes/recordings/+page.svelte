@@ -17,7 +17,7 @@
 	async function startRecording() {
 		try {
 			const recordingResponse = await pb.collection("recording").create({ start: new Date().toISOString() });
-			recording.active = true;
+			recording.init(recordingResponse);
 			goto(`/recordings/${recordingResponse.id}`);
 		} catch (err) {
 			console.error("Error creating recording");
