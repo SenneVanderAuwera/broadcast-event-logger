@@ -54,9 +54,9 @@
 		<div class="flex">
 			<div class="basis-48"></div>
 			<div class="flex-1">
-				<Button size="icon" class={[eventTypeColors.info]}><Info /></Button>
-				<Button size="icon" class={[eventTypeColors.warning]}><TriangleAlert /></Button>
-				<Button size="icon" class={[eventTypeColors.error]}><Ban /></Button>
+				<Button size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
+				<Button size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+				<Button size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
 			</div>
 		</div>
 	</div>
