@@ -7,6 +7,6 @@ export const load = (async ({ locals }) => {
 		return { activeRecording: activeRecordingResult };
 	} catch (err) {
 		if (err instanceof ClientResponseError && err.status !== 404) console.error(err);
-		return { activeRecording: null };
+		return { activeRecording: undefined };
 	}
 }) satisfies LayoutServerLoad;

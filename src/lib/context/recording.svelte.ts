@@ -1,4 +1,4 @@
-import type { RecordingRecord } from "$lib/pocketbase/types";
+import type { RecordingRecord, RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, setContext } from "svelte";
 
 class Recording {
@@ -24,7 +24,7 @@ class Recording {
 
 const RECORDING_CTX = Symbol("recording");
 
-export function createRecordingContext(record?: RecordingRecord) {
+export function createRecordingContext(record?: RecordingResponse) {
 	const recording = new Recording();
 	setContext(RECORDING_CTX, recording);
 
