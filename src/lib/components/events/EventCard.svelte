@@ -1,7 +1,10 @@
 <script lang="ts">
+	import type { EventRecord } from "$lib/pocketbase/types";
 	import { eventTypeColors } from "./colors";
 
-	let { type = "info" }: { type?: "info" | "warning" | "danger" } = $props();
+	let { data }: { data: EventRecord } = $props();
+
+	const type: "info" | "warning" | "error" = $derived(data.type as "info" | "warning" | "error");
 
 	let color = $derived(eventTypeColors[type]);
 </script>

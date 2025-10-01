@@ -39,9 +39,9 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			<EventCard type="warning"></EventCard>
-			<EventCard type="info"></EventCard>
-			<EventCard type="danger"></EventCard>
+			{#each data.events as event}
+				<EventCard data={event} />
+			{/each}
 		</div>
 
 		{@render separator()}
