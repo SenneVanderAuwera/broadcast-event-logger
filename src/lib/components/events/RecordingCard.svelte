@@ -8,7 +8,7 @@
 
 <div class="flex items-center">
 	<div class="basis-48 print:basis-0"></div>
-	<div class={["rounded-lg shadow-md p-4 space-y-3 flex-1 print:border-8 print:shadow-none", color]}>
+	<div class={["rounded-lg shadow-md p-4 space-y-3 flex-1 print:border-2 print:shadow-none print:bg-transparent print:text-foreground", color]}>
 		<header class="flex justify-between">
 			<span class="flex-1 text-start">{@render left?.()}</span>
 			<span class="flex-1 text-center text-xl font-bold"> {@render center?.()}</span>
