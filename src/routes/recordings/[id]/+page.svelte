@@ -12,8 +12,6 @@
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
-
-	$inspect(recording);
 </script>
 
 {#snippet separator()}
