@@ -12,10 +12,7 @@
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
-
-	if (data.activeRecording) {
-		recording.active = true;
-	}
+	recording.init(data.activeRecording);
 
 	async function startRecording() {
 		try {

@@ -1,9 +1,25 @@
+import type { RecordingRecord } from "$lib/pocketbase/types";
 import { getContext, setContext } from "svelte";
 
 class Recording {
 	active = $state(false);
+	id = $state("");
 
 	constructor() {}
+
+	init(record: RecordingRecord) {
+		if (record) {
+			this.active = true;
+			this.id = record.id;
+		} else {
+			this.clear();
+		}
+	}
+
+	clear() {
+		this.active = false;
+		this.id = "";
+	}
 }
 
 const RECORDING_CTX = Symbol("recording");
