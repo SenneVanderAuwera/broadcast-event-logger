@@ -92,6 +92,11 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export enum EventTypeOptions {
+	"info" = "info",
+	"warning" = "warning",
+	"error" = "error",
+}
 export type EventRecord = {
 	created?: IsoDateString
 	id: string
@@ -99,6 +104,7 @@ export type EventRecord = {
 	recording: RecordIdString
 	timestamp: IsoDateString
 	title: string
+	type: EventTypeOptions
 	updated?: IsoDateString
 }
 
