@@ -13,10 +13,26 @@
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import Ban from "@lucide/svelte/icons/ban";
 	import { eventTypeColors } from "$lib/components/events/colors";
+	import { createNewEvent } from "$lib/utils/events";
+	import { DateTime } from "luxon";
+	import { onMount } from "svelte";
+	import { pb } from "$lib/pocketbase";
+	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
+	let events = $state(data.events);
+
+	onMount(() => {
+		pb.collection("event").subscribe("*", ({ action, record }) => {
+			if (action === "create") events.push(record);
+			if (action === "delete") events = data.events.filter((e) => e.id !== record.id);
+			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
+		});
+
+		return () => pb.collection("event").unsubscribe("*");
+	});
 </script>
 
 {#snippet separator()}
@@ -39,25 +55,49 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingCard data={data.recording}></RecordingCard>
+		<RecordingCard>
+			{#snippet left()}
+				<span class="text-xl font-bold"> {data.recording.recording_name} </span>
+			{/snippet}
+			{#snippet center()}
+				<span class="text-xl font-bold"> {data.recording.filename} </span>
+			{/snippet}
+			{#snippet right()}
+				<span> {DateTime.fromSQL(data.recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+			{/snippet}
+		</RecordingCard>
 
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each data.events as event}
+			{#each events as event}
 				<EventCard recording={data.recording} data={event} />
 			{/each}
 		</div>
 
 		{@render separator()}
 
-		<div class="flex">
-			<div class="basis-48"></div>
-			<div class="flex-1">
-				<Button size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
-				<Button size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-				<Button size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
+		{#if recording.active}
+			<div class="flex">
+				<div class="basis-48"></div>
+				<div class="flex-1">
+					<Button onclick={() => createNewEvent(data.recording.id, "info", DateTime.now())} size="icon" class={[eventTypeColors.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(data.recording.id, "warning", DateTime.now())} size="icon" class={[eventTypeColors.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+					<Button onclick={() => createNewEvent(data.recording.id, "error", DateTime.now())} size="icon" class={[eventTypeColors.error, "cursor-pointer"]}><Ban /></Button>
+				</div>
 			</div>
-		</div>
+		{:else}
+			<RecordingCard>
+				{#snippet left()}
+					<span class="text-xl font-bold"> Recording end </span>
+				{/snippet}
+				{#snippet center()}
+					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(data.recording.start), DateTime.fromSQL(data.recording.stop)).toFormat("hh:mm:ss")}</span>
+				{/snippet}
+				{#snippet right()}
+					<span> {DateTime.fromSQL(data.recording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+				{/snippet}
+			</RecordingCard>
+		{/if}
 	</div>
 </div>
