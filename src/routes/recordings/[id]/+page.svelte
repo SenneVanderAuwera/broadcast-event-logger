@@ -27,8 +27,6 @@
 	{#snippet right()}
 		{#if recording.active}
 			<Button onclick={() => stopRecording(recording)} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
-		{:else}
-			<Button href={`/recordings`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
