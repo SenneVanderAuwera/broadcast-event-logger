@@ -1,18 +1,26 @@
 <script lang="ts">
 	import RecordingCard from "./components/recording-card.svelte";
 
+	import { goto } from "$app/navigation";
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
+	import { getRecordingContext } from "$lib/context/recording.svelte";
+	import { pb } from "$lib/pocketbase";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
-	import { pb } from "$lib/pocketbase";
-	import { goto } from "$app/navigation";
 
 	let { data }: PageProps = $props();
+
+	const recording = getRecordingContext();
+
+	if (data.activeRecording) {
+		recording.active = true;
+	}
 
 	async function startRecording() {
 		try {
 			const recordingResponse = await pb.collection("recording").create({ start: new Date().toISOString() });
+			recording.active = true;
 			goto(`/recordings/${recordingResponse.id}`);
 		} catch (err) {
 			console.error("Error creating recording");
@@ -22,7 +30,11 @@
 
 <Nav>
 	{#snippet right()}
-		<Button onclick={startRecording} variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
+		{#if recording.active}
+			<Button href={`/recordings/${data.activeRecording.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
+		{:else}
+			<Button onclick={startRecording} variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
+		{/if}
 		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
 	{/snippet}
 </Nav>
