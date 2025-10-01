@@ -89,9 +89,9 @@
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
-					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
 				</div>
 			</div>
 		{:else}
