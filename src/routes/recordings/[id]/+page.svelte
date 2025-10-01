@@ -40,7 +40,7 @@
 
 		<div class="flex flex-col gap-1">
 			{#each data.events as event}
-				<EventCard data={event} />
+				<EventCard recording={data.recording} data={event} />
 			{/each}
 		</div>
 
