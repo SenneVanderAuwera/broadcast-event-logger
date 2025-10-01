@@ -5,13 +5,24 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
+	import { pb } from "$lib/pocketbase";
+	import { goto } from "$app/navigation";
 
 	let { data }: PageProps = $props();
+
+	async function startRecording() {
+		try {
+			const recordingResponse = await pb.collection("recording").create({ start: new Date().toISOString() });
+			goto(`/recordings/${recordingResponse.id}`);
+		} catch (err) {
+			console.error("Error creating recording");
+		}
+	}
 </script>
 
 <Nav>
 	{#snippet right()}
-		<Button href="#" variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
+		<Button onclick={startRecording} variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
 		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
 	{/snippet}
 </Nav>
