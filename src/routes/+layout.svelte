@@ -1,12 +1,8 @@
 <script lang="ts">
-	import "../app.css";
 	import favicon from "$lib/assets/favicon.svg";
-	import { createRecordingContext } from "$lib/context/recording.svelte";
+	import "../app.css";
 
 	let { children } = $props();
-
-	// Create the recording context
-	createRecordingContext();
 </script>
 
 <svelte:head>

@@ -5,9 +5,15 @@
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
+	import { getRecordingContext } from "$lib/context/recording.svelte";
+	import { stopRecording } from "$lib/utils/recording";
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
+
+	const recording = getRecordingContext();
+
+	$inspect(recording);
 </script>
 
 {#snippet separator()}
@@ -21,7 +27,7 @@
 
 <Nav>
 	{#snippet right()}
-		<Button href="#" variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
+		<Button onclick={() => stopRecording(recording)} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
 </Nav>

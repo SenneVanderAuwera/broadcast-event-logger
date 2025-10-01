@@ -24,9 +24,14 @@ class Recording {
 
 const RECORDING_CTX = Symbol("recording");
 
-export function createRecordingContext() {
+export function createRecordingContext(record?: RecordingRecord) {
 	const recording = new Recording();
 	setContext(RECORDING_CTX, recording);
+
+	if (record) {
+		recording.init(record);
+	}
+
 	return recording;
 }
 
