@@ -12,7 +12,7 @@ class Recording {
 		this.id = "";
 
 		if (!record) this.clear();
-		if (record.stop === "") {
+		if (record?.stop === "") {
 			this.active = true;
 			this.id = record.id;
 		} else {
