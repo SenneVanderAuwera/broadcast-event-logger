@@ -12,16 +12,15 @@ type RequestBodyParams = {
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const requestFormData = await request.formData();
-	const formDataObject = Object.fromEntries(requestFormData.entries()) as RequestBodyParams;
+	const requestBody: RequestBodyParams = await request.json();
 
-	if (!formDataObject.title) formDataObject.title = "New event";
-	if (!formDataObject.type) formDataObject.type = "info";
-	if (!formDataObject.message) formDataObject.message = "";
-	if (!formDataObject.timestamp) {
-		formDataObject.timestamp = DateTime.now().toSQL();
+	if (!requestBody.title) requestBody.title = "New event";
+	if (!requestBody.type) requestBody.type = "info";
+	if (!requestBody.message) requestBody.message = "";
+	if (!requestBody.timestamp) {
+		requestBody.timestamp = DateTime.now().toSQL();
 	} else {
-		formDataObject.timestamp = DateTime.fromISO(formDataObject.timestamp).toSQL() as string;
+		requestBody.timestamp = DateTime.fromISO(requestBody.timestamp).toSQL() as string;
 	}
 
 	let activeRecording: RecordingResponse | undefined = undefined;
@@ -39,10 +38,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		const eventResponse = await locals.pb.collection("event").create({
 			recording: activeRecording?.id,
-			title: formDataObject.title,
-			type: formDataObject.type,
-			message: formDataObject.message,
-			timestamp: formDataObject.timestamp,
+			title: requestBody.title,
+			type: requestBody.type,
+			message: requestBody.message,
+			timestamp: requestBody.timestamp,
 		});
 	} catch (err) {
 		console.error("Error creating event:", err);

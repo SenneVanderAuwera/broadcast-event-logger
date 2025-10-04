@@ -9,10 +9,9 @@ type RequestBodyParams = {
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const requestFormData = await request.formData();
-	const formDataObject = Object.fromEntries(requestFormData.entries()) as RequestBodyParams;
+	const requestBody: RequestBodyParams = await request.json();
 
-	let recordingStopTimeFromRequest = DateTime.fromISO(formDataObject.stop);
+	let recordingStopTimeFromRequest = DateTime.fromISO(requestBody.stop);
 	let recordingStopTime = DateTime.now();
 
 	if (recordingStopTimeFromRequest.isValid) recordingStopTime = recordingStopTimeFromRequest;
