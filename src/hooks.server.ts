@@ -1,9 +1,9 @@
-import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
+import { BACKEND_POCKETBASE_URL } from "$env/static/private";
 import { type Handle } from "@sveltejs/kit";
 import PocketBase from "pocketbase";
 
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+	event.locals.pb = new PocketBase(BACKEND_POCKETBASE_URL);
 
 	const response = await resolve(event);
 	return response;
