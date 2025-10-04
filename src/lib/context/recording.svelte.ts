@@ -11,7 +11,7 @@ class Recording {
 		this.active = false;
 		this.id = "";
 
-		if (record.stop === undefined) {
+		if (record.stop === "") {
 			this.active = true;
 			this.id = record.id;
 		} else {
@@ -22,6 +22,13 @@ class Recording {
 	clear() {
 		this.active = false;
 		this.id = "";
+	}
+
+	toJSON() {
+		return {
+			active: this.active,
+			id: this.id,
+		};
 	}
 }
 
