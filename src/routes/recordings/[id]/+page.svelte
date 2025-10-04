@@ -18,7 +18,6 @@
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import { DateTime } from "luxon";
 	import { onMount } from "svelte";
-	import { invalidateAll } from "$app/navigation";
 
 	let { data }: PageProps = $props();
 

@@ -11,6 +11,7 @@ class Recording {
 		this.active = false;
 		this.id = "";
 
+		if (!record) this.clear();
 		if (record.stop === "") {
 			this.active = true;
 			this.id = record.id;
