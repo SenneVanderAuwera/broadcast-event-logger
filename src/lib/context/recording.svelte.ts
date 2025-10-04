@@ -8,7 +8,10 @@ class Recording {
 	constructor() {}
 
 	init(record: RecordingRecord) {
-		if (record) {
+		this.active = false;
+		this.id = "";
+
+		if (record.stop === undefined) {
 			this.active = true;
 			this.id = record.id;
 		} else {
