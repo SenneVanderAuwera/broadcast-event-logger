@@ -1,5 +1,5 @@
 import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "../$types";
+import type { RequestHandler } from "./$types";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { ClientResponseError } from "pocketbase";
 import { DateTime } from "luxon";
