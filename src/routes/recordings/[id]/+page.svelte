@@ -22,6 +22,8 @@
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
+	recording.init(data.recording);
+
 	let events = $state(data.events);
 	let loadedRecording = $state(data.recording);
 
@@ -32,8 +34,14 @@
 			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
 		});
 
-		pb.collection("recording").subscribe(loadedRecording.id, ({ action, record }) => {
-			if (action === "update") loadedRecording = record;
+		pb.collection("recording").subscribe(loadedRecording.id, async ({ action, record }) => {
+			recording.init(record);
+
+			try {
+				loadedRecording = record;
+			} catch (err) {
+				console.error(err);
+			}
 		});
 
 		return () => {

@@ -8,7 +8,11 @@ class Recording {
 	constructor() {}
 
 	init(record: RecordingRecord) {
-		if (record) {
+		this.active = false;
+		this.id = "";
+
+		if (!record) this.clear();
+		if (record.stop === "") {
 			this.active = true;
 			this.id = record.id;
 		} else {
@@ -19,6 +23,13 @@ class Recording {
 	clear() {
 		this.active = false;
 		this.id = "";
+	}
+
+	toJSON() {
+		return {
+			active: this.active,
+			id: this.id,
+		};
 	}
 }
 

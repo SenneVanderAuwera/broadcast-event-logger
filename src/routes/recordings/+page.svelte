@@ -3,14 +3,15 @@
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
+	import { getRecordingContext } from "$lib/context/recording.svelte";
 	import { startRecording } from "$lib/utils/recording";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
-	import { getRecordingContext } from "$lib/context/recording.svelte";
 
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
+	recording.init(data.recordings[0]);
 </script>
 
 <Nav>
