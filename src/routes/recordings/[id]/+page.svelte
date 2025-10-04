@@ -33,6 +33,7 @@
 		});
 
 		pb.collection("recording").subscribe(loadedRecording.id, ({ action, record }) => {
+			console.log(action);
 			if (action === "update") loadedRecording = record;
 		});
 
