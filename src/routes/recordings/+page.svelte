@@ -11,7 +11,6 @@
 	let { data }: PageProps = $props();
 
 	const recording = getRecordingContext();
-	recording.init(data.recordings[0]);
 </script>
 
 <Nav>
