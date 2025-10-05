@@ -3,7 +3,7 @@ import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
 
-class Recording {
+class RecordingState {
 	id = $state("");
 	recordings: RecordingResponse[] = $state([]);
 	activeRecording: RecordingResponse | null = $derived(this.recordings.find((r) => !r.stop) || null);
@@ -54,7 +54,7 @@ class Recording {
 const RECORDING_CTX = Symbol("recording");
 
 export function createRecordingContext(records: RecordingResponse[]) {
-	const recording = new Recording();
+	const recording = new RecordingState();
 	setContext(RECORDING_CTX, recording);
 
 	if (records?.length > 0) {
