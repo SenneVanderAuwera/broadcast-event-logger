@@ -1,15 +1,18 @@
+import { invalidateAll } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
 
 class Recording {
-	active = $state(false);
 	id = $state("");
-	records: RecordingResponse[] = $state([]);
+	recordings: RecordingResponse[] = $state([]);
+	activeRecording: RecordingResponse | null = $derived(this.recordings.find((r) => !r.stop) || null);
 
 	constructor() {
 		onMount(() => {
-			pb.collection("recording").subscribe("*", (e) => {});
+			pb.collection("recording").subscribe("*", (e) => {
+				invalidateAll();
+			});
 
 			return () => {
 				pb.collection("recording").unsubscribe("*");
@@ -17,15 +20,8 @@ class Recording {
 		});
 	}
 
-	init(record: RecordingResponse) {
-		if (!record) this.clear();
-
-		if (record?.stop === "") {
-			this.active = true;
-			this.id = record.id;
-		} else {
-			this.clear();
-		}
+	init(records: RecordingResponse[]) {
+		this.recordings = records;
 	}
 
 	async start() {
@@ -39,32 +35,30 @@ class Recording {
 	async stop() {
 		try {
 			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
+			this.clear();
 		} catch (err) {
 			throw err;
 		}
 	}
 
-	clear() {
-		this.active = false;
-		this.id = "";
+	isActive() {
+		return this.activeRecording !== null;
 	}
 
-	toJSON() {
-		return {
-			active: this.active,
-			id: this.id,
-		};
+	clear() {
+		this.activeRecording = null;
+		this.id = "";
 	}
 }
 
 const RECORDING_CTX = Symbol("recording");
 
-export function createRecordingContext(record?: RecordingResponse) {
+export function createRecordingContext(records: RecordingResponse[]) {
 	const recording = new Recording();
 	setContext(RECORDING_CTX, recording);
 
-	if (record) {
-		recording.init(record);
+	if (records?.length > 0) {
+		recording.init(records);
 	}
 
 	return recording;
