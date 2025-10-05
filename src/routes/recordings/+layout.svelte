@@ -5,7 +5,13 @@
 	let { data, children }: LayoutProps = $props();
 
 	// Create the recording context
-	createRecordingContext(data.recordings);
+	const recordingState = createRecordingContext();
+
+	$effect(() => {
+		recordingState.init(data.recordings);
+	});
+
+	$inspect(recordingState.recordings);
 </script>
 
 {@render children()}

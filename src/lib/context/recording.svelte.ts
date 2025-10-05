@@ -6,7 +6,10 @@ import { getContext, onMount, setContext } from "svelte";
 class RecordingState {
 	id = $state("");
 	recordings: RecordingResponse[] = $state([]);
-	activeRecording: RecordingResponse | null = $derived(this.recordings.find((r) => !r.stop) || null);
+	activeRecording: RecordingResponse | null = $derived.by(() => {
+		if (!this.recordings) return null;
+		return this.recordings.find((r) => !r.stop) || null;
+	});
 
 	constructor() {
 		onMount(() => {
@@ -53,13 +56,9 @@ class RecordingState {
 
 const RECORDING_CTX = Symbol("recording");
 
-export function createRecordingContext(records: RecordingResponse[]) {
+export function createRecordingContext() {
 	const recording = new RecordingState();
 	setContext(RECORDING_CTX, recording);
-
-	if (records?.length > 0) {
-		recording.init(records);
-	}
 
 	return recording;
 }

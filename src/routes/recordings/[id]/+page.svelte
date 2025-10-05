@@ -6,7 +6,6 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { getRecordingContext } from "$lib/context/recording.svelte";
-	import { stopRecording } from "$lib/utils/recording";
 	import type { PageProps } from "./$types";
 
 	import { eventStyles } from "$lib/components/events/colors";
@@ -21,8 +20,7 @@
 
 	let { data }: PageProps = $props();
 
-	const recording = getRecordingContext();
-	recording.init(data.recording);
+	const recordingState = getRecordingContext();
 
 	let events = $state(data.events);
 	let loadedRecording = $state(data.recording);
@@ -34,19 +32,8 @@
 			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
 		});
 
-		pb.collection("recording").subscribe(loadedRecording.id, async ({ action, record }) => {
-			recording.init(record);
-
-			try {
-				loadedRecording = record;
-			} catch (err) {
-				console.error(err);
-			}
-		});
-
 		return () => {
 			pb.collection("event").unsubscribe("*");
-			pb.collection("recording").unsubscribe("*");
 		};
 	});
 </script>
@@ -62,8 +49,8 @@
 
 <Nav>
 	{#snippet right()}
-		{#if recording.active}
-			<Button onclick={() => stopRecording(recording)} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
+		{#if recordingState.isActive()}
+			<Button onclick={recordingState.stop} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
@@ -93,7 +80,7 @@
 
 		{@render separator()}
 
-		{#if recording.active}
+		{#if recordingState.isActive()}
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
