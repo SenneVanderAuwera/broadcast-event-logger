@@ -10,8 +10,6 @@
 	$effect(() => {
 		recordingState.init(data.recordings);
 	});
-
-	$inspect(recordingState.recordings);
 </script>
 
 {@render children()}

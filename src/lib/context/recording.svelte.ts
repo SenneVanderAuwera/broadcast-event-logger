@@ -4,7 +4,6 @@ import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
 
 class RecordingState {
-	id = $state("");
 	recordings: RecordingResponse[] = $state([]);
 	activeRecording: RecordingResponse | null = $derived.by(() => {
 		if (!this.recordings) return null;
@@ -50,7 +49,6 @@ class RecordingState {
 
 	clear() {
 		this.activeRecording = null;
-		this.id = "";
 	}
 }
 
