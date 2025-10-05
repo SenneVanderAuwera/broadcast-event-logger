@@ -3,6 +3,7 @@
 	import type { LayoutProps } from "./$types";
 
 	let { data, children }: LayoutProps = $props();
+
 	// Create the recording context
 	createRecordingContext(data.activeRecording);
 </script>
