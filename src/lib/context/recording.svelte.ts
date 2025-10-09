@@ -29,6 +29,7 @@ class RecordingState {
 	async start() {
 		try {
 			const recordingResponse = await fetch("/api/recording/start", { method: "POST", body: "{}" });
+			return await recordingResponse.json();
 		} catch (err) {
 			throw err;
 		}
@@ -38,6 +39,7 @@ class RecordingState {
 		try {
 			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
 			this.clear();
+			return await recordingResponse.json();
 		} catch (err) {
 			throw err;
 		}
