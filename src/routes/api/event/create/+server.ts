@@ -43,10 +43,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			message: requestBody.message,
 			timestamp: requestBody.timestamp,
 		});
+		return json({ message: "Event created", data: eventResponse });
 	} catch (err) {
 		console.error("Error creating event:", err);
 		error(500, "Failed to create event entry");
 	}
-
-	return json({ message: "Event created" });
 };
