@@ -1,4 +1,4 @@
-import { invalidateAll } from "$app/navigation";
+import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
@@ -13,7 +13,7 @@ class RecordingState {
 	constructor() {
 		onMount(() => {
 			pb.collection("recording").subscribe("*", (e) => {
-				invalidateAll();
+				invalidate("recordings:non-archived");
 			});
 
 			return () => {
