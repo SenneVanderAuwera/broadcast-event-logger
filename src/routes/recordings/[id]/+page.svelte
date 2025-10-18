@@ -17,13 +17,14 @@
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import { DateTime } from "luxon";
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 
 	let { data }: PageProps = $props();
 
 	const recordingState = getRecordingContext();
 
 	let events = $state(data.events);
-	let loadedRecording = $state(data.recording);
+	let loadedRecording = $state(data.recordings.find((r) => r.id === page.params.id)!);
 
 	onMount(() => {
 		pb.collection("event").subscribe("*", ({ action, record }) => {

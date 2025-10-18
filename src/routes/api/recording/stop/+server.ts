@@ -20,7 +20,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	try {
 		activeRecording = await locals.pb.collection("recording").getFirstListItem(`stop=null`);
-		return json({ message: "Active recording found", data: activeRecording });
 	} catch (err) {
 		if (err instanceof ClientResponseError) {
 			if (err.status === 404) {

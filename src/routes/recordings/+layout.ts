@@ -2,7 +2,8 @@ import { ClientResponseError } from "pocketbase";
 import type { LayoutLoad } from "./$types";
 import { pb } from "$lib/pocketbase";
 
-export const load = (async ({ fetch }) => {
+export const load = (async ({ fetch, depends }) => {
+	depends("recordings:non-archived");
 	try {
 		const recordingsResult = await pb.collection("recording").getFullList({ filter: "archived=false", sort: "-created", fetch });
 		return { recordings: recordingsResult };
