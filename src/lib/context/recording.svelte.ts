@@ -37,8 +37,8 @@ class RecordingState {
 
 	async stop() {
 		try {
-			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
 			this.clear();
+			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
 			return await recordingResponse.json();
 		} catch (err) {
 			throw err;

@@ -24,7 +24,7 @@
 	const recordingState = getRecordingContext();
 
 	let events = $state(data.events);
-	let loadedRecording = $state(data.recordings.find((r) => r.id === page.params.id)!);
+	let loadedRecording = $derived(data.recordings.find((r) => r.id === page.params.id)!);
 
 	onMount(() => {
 		pb.collection("event").subscribe("*", ({ action, record }) => {
