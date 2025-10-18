@@ -11,8 +11,8 @@
 
 	async function startNewRecording() {
 		try {
-			await recordingState.start();
-			goto(`/recordings/${recordingState.activeRecording?.id}`);
+			const recording = await recordingState.start();
+			await goto(`/recordings/${recording.data?.id}`);
 		} catch (err) {}
 	}
 </script>

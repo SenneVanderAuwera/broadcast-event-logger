@@ -50,7 +50,7 @@
 <Nav>
 	{#snippet right()}
 		{#if recordingState.isActive()}
-			<Button onclick={recordingState.stop} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
+			<Button onclick={() => recordingState.stop()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive">Stop recording</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
