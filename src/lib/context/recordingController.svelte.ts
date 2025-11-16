@@ -7,26 +7,36 @@ class RecordingController {
 		return this.#recordings.find((recording) => !recording.stop) || null;
 	});
 
-	constructor() {
+	constructor(data: RecordingResponse[]) {
+		this.#recordings = data;
+
 		onMount(() => {});
+	}
+
+	getSelectedRecording(id: RecordingResponse["id"]) {
+		return this.#recordings.find((recording) => recording.id === id) || null;
 	}
 
 	get recordings() {
 		return this.#recordings;
 	}
 
-	get status() {
+	set recordings(value: RecordingResponse[]) {
+		this.#recordings = value;
+	}
+
+	get data() {
 		return {
-			isActive: this.#activeRecording !== null,
-			activeRecording: this.#activeRecording,
+			active: this.#activeRecording !== null,
+			record: this.#activeRecording,
 		};
 	}
 }
 
 const RECORDING_CONTROLLER_CTX = Symbol("recordingController");
 
-export function setRecordingControllerCtx() {
-	const controller = new RecordingController();
+export function setRecordingControllerCtx(data: RecordingResponse[]) {
+	const controller = new RecordingController(data);
 	return setContext(RECORDING_CONTROLLER_CTX, controller);
 }
 
