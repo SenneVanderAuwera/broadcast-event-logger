@@ -5,11 +5,13 @@
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
-	import { getRecordingContext } from "$lib/context/recording.svelte";
 	import type { PageProps } from "./$types";
 
+	import { page } from "$app/state";
 	import { eventStyles } from "$lib/components/events/colors";
+	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
+	import type { RecordingResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
 	import Ban from "@lucide/svelte/icons/ban";
@@ -17,9 +19,6 @@
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import { DateTime } from "luxon";
 	import { onMount } from "svelte";
-	import { page } from "$app/state";
-	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
-	import type { RecordingResponse } from "$lib/pocketbase/types";
 
 	let { data }: PageProps = $props();
 
