@@ -1,3 +1,4 @@
+import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
 
@@ -15,6 +16,12 @@ class RecordingController {
 
 	getSelectedRecording(id: RecordingResponse["id"]) {
 		return this.#recordings.find((recording) => recording.id === id) || null;
+	}
+
+	stopRecording() {
+		if (this.#activeRecording) {
+			pb.collection("recording").update(this.#activeRecording.id, { stop: new Date().toISOString() });
+		}
 	}
 
 	get recordings() {
