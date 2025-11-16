@@ -1,3 +1,4 @@
+import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
@@ -11,14 +12,28 @@ class RecordingController {
 	constructor(data: RecordingResponse[]) {
 		this.#recordings = data;
 
-		onMount(() => {});
+		onMount(() => {
+			pb.collection("recording").subscribe("*", (e) => {
+				invalidate("recordings:non-archived");
+			});
+
+			return () => {
+				pb.collection("recording").unsubscribe("*");
+			};
+		});
 	}
 
 	getSelectedRecording(id: RecordingResponse["id"]) {
 		return this.#recordings.find((recording) => recording.id === id) || null;
 	}
 
-	stopRecording() {
+	async startRecording() {
+		return pb.collection("recording").create({
+			start: new Date().toISOString(),
+		});
+	}
+
+	async stopRecording() {
 		if (this.#activeRecording) {
 			pb.collection("recording").update(this.#activeRecording.id, { stop: new Date().toISOString() });
 		}

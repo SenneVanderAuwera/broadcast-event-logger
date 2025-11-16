@@ -5,26 +5,30 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
+	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
+	import { goto } from "$app/navigation";
+	import { tick } from "svelte";
 
 	let { data }: PageProps = $props();
 
-	// recordingActive should be true when a recording is currently active (eg. no stop datetime)
-	let activeRecording = $derived(data.recordings.find((r) => r.stop === null));
+	const recordingController = getRecordingControllerCtx();
 
-	/* async function startNewRecording() {
+	async function startNewRecording() {
 		try {
-			const recording = await recordingState.start();
-			await goto(`/recordings/${recording.data?.id}`);
-		} catch (err) {}
-	} */
+			const recording = await recordingController.startRecording();
+			window.location.href = `/recordings/${recording.id}`;
+		} catch (err) {
+		} finally {
+		}
+	}
 </script>
 
 <Nav>
 	{#snippet right()}
-		{#if activeRecording}
-			<Button href={`/recordings/${activeRecording?.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
+		{#if recordingController.data.active}
+			<Button href={`/recordings/${recordingController.data.record?.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
 		{:else}
-			<Button variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
+			<Button variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white" onclick={startNewRecording}>Start new recording</Button>
 		{/if}
 		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
 	{/snippet}
