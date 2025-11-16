@@ -11,8 +11,6 @@
 	// recordingActive should be true when a recording is currently active (eg. no stop datetime)
 	let activeRecording = $derived(data.recordings.find((r) => r.stop === null));
 
-	$inspect(activeRecording);
-
 	/* async function startNewRecording() {
 		try {
 			const recording = await recordingState.start();
