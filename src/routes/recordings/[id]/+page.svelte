@@ -25,7 +25,7 @@
 	const recordingState = getRecordingControllerCtx();
 
 	let events = $state(data.events);
-	let loadedRecording = recordingState.getSelectedRecording(page.params.id ?? "") as RecordingResponse;
+	let loadedRecording = $derived(recordingState.getSelectedRecording(page.params.id ?? "") as RecordingResponse);
 
 	onMount(() => {
 		pb.collection("event").subscribe("*", ({ action, record }) => {
