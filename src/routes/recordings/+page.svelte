@@ -3,23 +3,17 @@
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
+	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
-	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
-	import { goto } from "$app/navigation";
-	import { tick } from "svelte";
 
 	let { data }: PageProps = $props();
 
 	const recordingController = getRecordingControllerCtx();
 
 	async function startNewRecording() {
-		try {
-			const recording = await recordingController.startRecording();
-			window.location.href = `/recordings/${recording.id}`;
-		} catch (err) {
-		} finally {
-		}
+		const r = await recordingController.startRecording();
+		window.location.href = `/recordings/${r.id}`;
 	}
 </script>
 
