@@ -17,6 +17,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	try {
 		const recordingResponse = await locals.pb.collection("recording").create({ start: recordingStartTime.toSQL() });
+		return json({ message: "New recording started", data: recordingResponse });
 	} catch (err) {
 		if (err instanceof ClientResponseError) {
 			if (err.data.data.stop.code === "validation_not_unique") {
@@ -25,6 +26,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 		error(500, "Failed to create recording entry");
 	}
-
-	return json({ message: "New recording started" });
 };

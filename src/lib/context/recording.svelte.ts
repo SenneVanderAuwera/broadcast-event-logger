@@ -1,47 +1,64 @@
-import type { RecordingRecord, RecordingResponse } from "$lib/pocketbase/types";
-import { getContext, setContext } from "svelte";
+import { invalidate } from "$app/navigation";
+import { pb } from "$lib/pocketbase";
+import type { RecordingResponse } from "$lib/pocketbase/types";
+import { getContext, onMount, setContext } from "svelte";
 
-class Recording {
-	active = $state(false);
-	id = $state("");
+class RecordingState {
+	recordings: RecordingResponse[] = $state([]);
+	activeRecording: RecordingResponse | null = $derived.by(() => {
+		if (!this.recordings) return null;
+		return this.recordings.find((r) => !r.stop) || null;
+	});
 
-	constructor() {}
+	constructor() {
+		onMount(() => {
+			pb.collection("recording").subscribe("*", (e) => {
+				invalidate("recordings:non-archived");
+			});
 
-	init(record: RecordingRecord) {
-		this.active = false;
-		this.id = "";
+			return () => {
+				pb.collection("recording").unsubscribe("*");
+			};
+		});
+	}
 
-		if (!record) this.clear();
-		if (record?.stop === "") {
-			this.active = true;
-			this.id = record.id;
-		} else {
-			this.clear();
+	init(records: RecordingResponse[]) {
+		this.recordings = records;
+	}
+
+	async start() {
+		try {
+			const recordingResponse = await fetch("/api/recording/start", { method: "POST", body: "{}" });
+			return await recordingResponse.json();
+		} catch (err) {
+			throw err;
 		}
 	}
 
-	clear() {
-		this.active = false;
-		this.id = "";
+	async stop() {
+		try {
+			this.clear();
+			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
+			return await recordingResponse.json();
+		} catch (err) {
+			throw err;
+		}
 	}
 
-	toJSON() {
-		return {
-			active: this.active,
-			id: this.id,
-		};
+	isActive() {
+		return this.activeRecording !== null;
+	}
+
+	clear() {
+		this.activeRecording = null;
 	}
 }
 
 const RECORDING_CTX = Symbol("recording");
 
-export function createRecordingContext(record?: RecordingResponse) {
-	const recording = new Recording();
+export function createRecordingContext() {
+	const recording = new RecordingState();
 	setContext(RECORDING_CTX, recording);
-
-	if (record) {
-		recording.init(record);
-	}
 
 	return recording;
 }

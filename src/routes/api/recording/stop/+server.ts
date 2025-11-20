@@ -30,9 +30,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	try {
 		const recordingResponse = await locals.pb.collection("recording").update(activeRecording?.id ?? "", { stop: recordingStopTime.toSQL() });
+		return json({ message: "Recording stopped", data: recordingResponse });
 	} catch (err) {
 		error(500, "Failed to stop recording entry");
 	}
-
-	return json({ message: "Recording stopped" });
 };

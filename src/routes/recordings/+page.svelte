@@ -3,23 +3,26 @@
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { getRecordingContext } from "$lib/context/recording.svelte";
-	import { startRecording } from "$lib/utils/recording";
+	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
 
-	const recording = getRecordingContext();
-	recording.init(data.recordings[0]);
+	const recordingController = getRecordingControllerCtx();
+
+	async function startNewRecording() {
+		const r = await recordingController.startRecording();
+		window.location.href = `/recordings/${r.id}`;
+	}
 </script>
 
 <Nav>
 	{#snippet right()}
-		{#if recording.active}
-			<Button href={`/recordings/${recording.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
+		{#if recordingController.data.active}
+			<Button href={`/recordings/${recordingController.data.record?.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
 		{:else}
-			<Button onclick={() => startRecording(recording)} variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white">Start new recording</Button>
+			<Button variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white hover:cursor-pointer" onclick={startNewRecording}>Start new recording</Button>
 		{/if}
 		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
 	{/snippet}
