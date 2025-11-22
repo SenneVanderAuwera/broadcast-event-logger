@@ -12,15 +12,7 @@ class RecordingController {
 	constructor(data: RecordingResponse[]) {
 		this.#recordings = data;
 
-		onMount(() => {
-			pb.collection("recording").subscribe("*", (e) => {
-				invalidate("recordings:non-archived");
-			});
-
-			return () => {
-				pb.collection("recording").unsubscribe("*");
-			};
-		});
+		onMount(() => {});
 	}
 
 	getSelectedRecording(id: RecordingResponse["id"]) {

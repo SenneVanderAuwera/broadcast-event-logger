@@ -1,7 +1,5 @@
-import { invalidate } from "$app/navigation";
-import { pb } from "$lib/pocketbase";
 import type { RecordingResponse } from "$lib/pocketbase/types";
-import { getContext, onMount, setContext } from "svelte";
+import { getContext, setContext } from "svelte";
 
 class RecordingState {
 	recordings: RecordingResponse[] = $state([]);
@@ -10,17 +8,7 @@ class RecordingState {
 		return this.recordings.find((r) => !r.stop) || null;
 	});
 
-	constructor() {
-		onMount(() => {
-			pb.collection("recording").subscribe("*", (e) => {
-				invalidate("recordings:non-archived");
-			});
-
-			return () => {
-				pb.collection("recording").unsubscribe("*");
-			};
-		});
-	}
+	constructor() {}
 
 	init(records: RecordingResponse[]) {
 		this.recordings = records;
