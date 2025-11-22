@@ -20,14 +20,19 @@ class RecordingController {
 	}
 
 	async startRecording() {
-		return pb.collection("recording").create({
-			start: new Date().toISOString(),
-		});
+		try {
+			return pb.collection("recording").create({
+				start: new Date().toISOString(),
+			});
+		} catch (err) {}
 	}
 
 	async stopRecording() {
 		if (this.#activeRecording) {
-			pb.collection("recording").update(this.#activeRecording.id, { stop: new Date().toISOString() });
+			try {
+				await pb.collection("recording").update(this.#activeRecording.id, { stop: new Date().toISOString() });
+				invalidate("recordings:non-archived");
+			} catch (err) {}
 		}
 	}
 
