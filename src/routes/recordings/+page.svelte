@@ -13,7 +13,7 @@
 
 	async function startNewRecording() {
 		const r = await recordingController.startRecording();
-		window.location.href = `/recordings/${r.id}`;
+		window.location.href = `/recordings/${r?.id}`;
 	}
 </script>
 
