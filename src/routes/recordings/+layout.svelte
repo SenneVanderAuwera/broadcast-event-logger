@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { invalidate } from "$app/navigation";
 	import { setRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import type { LayoutProps } from "./$types";
+	import { getRecordings } from "./data.remote";
 
 	let { data, children }: LayoutProps = $props();
 
-	let recordingController = setRecordingControllerCtx(data.recordings);
-	$effect(() => {
-		recordingController.recordings = data.recordings;
-	});
+	let recordingController = setRecordingControllerCtx();
+
+	const recordings = await getRecordings();
+	recordingController.setRecordings(recordings);
 </script>
 
 {@render children()}

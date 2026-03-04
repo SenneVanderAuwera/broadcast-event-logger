@@ -4,19 +4,23 @@ import type { RecordingResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
 
 class RecordingController {
-	#recordings: RecordingResponse[] = $state([]);
-	#activeRecording: RecordingResponse | null = $derived.by(() => {
-		return this.#recordings.find((recording) => !recording.stop) || null;
-	});
+	#recordings: RecordingResponse[];
+	#activeRecording: RecordingResponse | null;
 
-	constructor(data: RecordingResponse[]) {
-		this.#recordings = data;
+	constructor() {
+		this.#recordings = [];
+
+		this.#activeRecording = $derived(this.#recordings.find((recording) => recording.stop === null) || null);
 
 		onMount(() => {});
 	}
 
-	getSelectedRecording(id: RecordingResponse["id"]) {
-		return this.#recordings.find((recording) => recording.id === id) || null;
+	setRecordings(recordings: RecordingResponse[]) {
+		this.#recordings = recordings;
+	}
+
+	async getSelectedRecording(id: RecordingResponse["id"]) {
+		return (await this.#recordings).find((recording) => recording.id === id) || null;
 	}
 
 	async startRecording() {
@@ -54,8 +58,8 @@ class RecordingController {
 
 const RECORDING_CONTROLLER_CTX = Symbol("recordingController");
 
-export function setRecordingControllerCtx(data: RecordingResponse[]) {
-	const controller = new RecordingController(data);
+export function setRecordingControllerCtx() {
+	const controller = new RecordingController();
 	return setContext(RECORDING_CONTROLLER_CTX, controller);
 }
 
