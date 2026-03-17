@@ -7,7 +7,7 @@
 	import { toast } from "svelte-sonner";
 	import { slide } from "svelte/transition";
 	import { eventStyles } from "./colors";
-	import EventCardInput from "./EventCardInput.svelte";
+	import EventCardInput from "./HoverInput.svelte";
 
 	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
