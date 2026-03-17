@@ -22,10 +22,10 @@
 
 	let { data }: PageProps = $props();
 
-	const recordingState = getRecordingControllerCtx();
+	const recordingController = getRecordingControllerCtx();
 
 	let events = $derived(data.events);
-	let loadedRecording = $derived(await recordingState.getSelectedRecording(page.params.id ?? ""));
+	let loadedRecording = $derived(await recordingController.getSelectedRecording(page.params.id ?? ""));
 
 	onMount(() => {
 		pb.collection("event").subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
@@ -51,8 +51,8 @@
 
 <Nav>
 	{#snippet right()}
-		{#if recordingState.data.active}
-			<Button onclick={() => recordingState.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+		{#if recordingController.data.active}
+			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
@@ -82,7 +82,7 @@
 
 		{@render separator()}
 
-		{#if recordingState.data.active}
+		{#if recordingController.data.active}
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
