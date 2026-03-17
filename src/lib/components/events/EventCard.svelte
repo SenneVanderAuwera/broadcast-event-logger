@@ -19,9 +19,9 @@
 	<div class="hidden print:block ms-2 size-8 border-2 rounded-md"></div>
 	<div class="basis-48 text-center">{duration.toFormat("hh:mm:ss")}</div>
 
-	<div class={["rounded-lg p-4 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color]}>
+	<div class={["rounded-lg px-3 py-3 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color]}>
 		<header class="flex justify-between mb-0 items-center">
-			<EventCardInputButton bind:event />
+			<EventCardInputButton buttonClass={"text-lg font-bold px-1 h-9 hover:bg-white/20 hover:text-white/90"} bind:event />
 			<span class=""> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 		</header>
 
