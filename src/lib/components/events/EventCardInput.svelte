@@ -1,16 +1,13 @@
 <script lang="ts">
-	import { invalidateAll } from "$app/navigation";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
 	import type { ClassValue } from "clsx";
-	import { toast } from "svelte-sonner";
 
 	type Props = {
-		event: RecordingEventsResponse;
+		value: string;
 		className?: ClassValue;
+		onchange?: () => void;
 	};
-	let { event = $bindable(), className = "" }: Props = $props();
+	let { value = $bindable(), className = "", onchange }: Props = $props();
 
 	let input = $state<HTMLInputElement | null>(null);
 
@@ -24,16 +21,6 @@
 			input?.blur();
 		}
 	}
-
-	async function handleInputChange() {
-		try {
-			await pb.collection(Collections.RecordingEvents).update(event.id, { ...event });
-		} catch (err) {
-			toast.error("Failed to update event title");
-			console.error(err);
-			invalidateAll();
-		}
-	}
 </script>
 
-<Input bind:ref={input} class={[className]} bind:value={event.title} onfocuscapture={handleInputFocus} onchange={handleInputChange} onkeydown={handleEnterKey} />
+<Input bind:ref={input} class={[className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} />
