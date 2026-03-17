@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
 import { ClientResponseError } from "pocketbase";
 
 type RequestBodyParams = {
@@ -23,10 +23,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		requestBody.timestamp = DateTime.fromISO(requestBody.timestamp).toSQL() as string;
 	}
 
-	let activeRecording: RecordingResponse | undefined = undefined;
+	let activeRecording: RecordingsResponse | undefined = undefined;
 
 	try {
-		activeRecording = await locals.pb.collection("recording").getFirstListItem(`stop=null`);
+		activeRecording = await locals.pb.collection(Collections.Recordings).getFirstListItem(`stop=null`);
 	} catch (err) {
 		if (err instanceof ClientResponseError) {
 			if (err.status === 404) {
@@ -36,14 +36,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	try {
-		const eventResponse = await locals.pb.collection("event").create({
+		const RecordingEventsResponse = await locals.pb.collection(Collections.RecordingEvents).create({
 			recording: activeRecording?.id,
 			title: requestBody.title,
 			type: requestBody.type,
 			message: requestBody.message,
 			timestamp: requestBody.timestamp,
 		});
-		return json({ message: "Event created", data: eventResponse });
+		return json({ message: "Event created", data: RecordingEventsResponse });
 	} catch (err) {
 		console.error("Error creating event:", err);
 		error(500, "Failed to create event entry");

@@ -2,6 +2,7 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
 import { ClientResponseError } from "pocketbase";
+import { Collections } from "$lib/pocketbase/types";
 
 type RequestBodyParams = {
 	start: string;
@@ -16,8 +17,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	if (recordingStartTimeFromRequest.isValid) recordingStartTime = recordingStartTimeFromRequest;
 
 	try {
-		const recordingResponse = await locals.pb.collection("recording").create({ start: recordingStartTime.toSQL() });
-		return json({ message: "New recording started", data: recordingResponse });
+		const RecordingsResponse = await locals.pb.collection(Collections.Recordings).create({ start: recordingStartTime.toSQL() });
+		return json({ message: "New recording started", data: RecordingsResponse });
 	} catch (err) {
 		if (err instanceof ClientResponseError) {
 			if (err.data.data.stop.code === "validation_not_unique") {

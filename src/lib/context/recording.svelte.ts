@@ -1,23 +1,23 @@
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
 import { getContext, setContext } from "svelte";
 
 class RecordingState {
-	recordings: RecordingResponse[] = $state([]);
-	activeRecording: RecordingResponse | null = $derived.by(() => {
+	recordings: RecordingsResponse[] = $state([]);
+	activeRecording: RecordingsResponse | null = $derived.by(() => {
 		if (!this.recordings) return null;
 		return this.recordings.find((r) => !r.stop) || null;
 	});
 
 	constructor() {}
 
-	init(records: RecordingResponse[]) {
+	init(records: RecordingsResponse[]) {
 		this.recordings = records;
 	}
 
 	async start() {
 		try {
-			const recordingResponse = await fetch("/api/recording/start", { method: "POST", body: "{}" });
-			return await recordingResponse.json();
+			const RecordingsResponse = await fetch("/api/recording/start", { method: "POST", body: "{}" });
+			return await RecordingsResponse.json();
 		} catch (err) {
 			throw err;
 		}
@@ -26,8 +26,8 @@ class RecordingState {
 	async stop() {
 		try {
 			this.clear();
-			const recordingResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
-			return await recordingResponse.json();
+			const RecordingsResponse = await fetch("/api/recording/stop", { method: "POST", body: "{}" });
+			return await RecordingsResponse.json();
 		} catch (err) {
 			throw err;
 		}

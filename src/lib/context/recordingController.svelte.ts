@@ -1,36 +1,40 @@
 import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
 import { getContext, onMount, setContext } from "svelte";
+import { Collections } from "$lib/pocketbase/types";
 
 class RecordingController {
-	#recordings: RecordingResponse[] = $state([]);
-	#activeRecording: RecordingResponse | null = $derived.by(() => {
+	#recordings: RecordingsResponse[] = $state([]);
+	#activeRecording: RecordingsResponse | null = $derived.by(() => {
 		return this.#recordings.find((recording) => !recording.stop) || null;
 	});
 
-	constructor(data: RecordingResponse[]) {
+	constructor(data: RecordingsResponse[]) {
 		this.#recordings = data;
 
 		onMount(() => {});
 	}
 
-	getSelectedRecording(id: RecordingResponse["id"]) {
+	getSelectedRecording(id: RecordingsResponse["id"]) {
 		return this.#recordings.find((recording) => recording.id === id) || null;
 	}
 
 	async startRecording() {
 		try {
-			return pb.collection("recording").create({
+			return pb.collection(Collections.Recordings).create({
 				start: new Date().toISOString(),
 			});
-		} catch (err) {}
+		} catch (err) {
+			if (err instanceof Error) console.error(err);
+			throw new Error("Error starting recording");
+		}
 	}
 
 	async stopRecording() {
 		if (this.#activeRecording) {
 			try {
-				await pb.collection("recording").update(this.#activeRecording.id, { stop: new Date().toISOString() });
+				await pb.collection(Collections.Recordings).update(this.#activeRecording.id, { stop: new Date().toISOString() });
 				invalidate("recordings:non-archived");
 			} catch (err) {}
 		}
@@ -40,7 +44,7 @@ class RecordingController {
 		return this.#recordings;
 	}
 
-	set recordings(value: RecordingResponse[]) {
+	set recordings(value: RecordingsResponse[]) {
 		this.#recordings = value;
 	}
 
@@ -54,7 +58,7 @@ class RecordingController {
 
 const RECORDING_CONTROLLER_CTX = Symbol("recordingController");
 
-export function setRecordingControllerCtx(data: RecordingResponse[]) {
+export function setRecordingControllerCtx(data: RecordingsResponse[]) {
 	const controller = new RecordingController(data);
 	return setContext(RECORDING_CONTROLLER_CTX, controller);
 }

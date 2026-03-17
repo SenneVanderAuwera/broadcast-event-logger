@@ -11,7 +11,7 @@
 	import { eventStyles } from "$lib/components/events/colors";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
-	import type { RecordingResponse } from "$lib/pocketbase/types";
+	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
 	import Ban from "@lucide/svelte/icons/ban";
@@ -24,18 +24,18 @@
 
 	const recordingState = getRecordingControllerCtx();
 
-	let events = $state(data.events);
-	let loadedRecording = $derived(recordingState.getSelectedRecording(page.params.id ?? "") as RecordingResponse);
+	let events = $derived(data.events);
+	let loadedRecording = $derived(recordingState.getSelectedRecording(page.params.id ?? "") as RecordingsResponse);
 
 	onMount(() => {
-		pb.collection("event").subscribe("*", ({ action, record }) => {
+		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
 			if (action === "create") events.push(record);
 			if (action === "delete") events = data.events.filter((e) => e.id !== record.id);
 			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
 		});
 
 		return () => {
-			pb.collection("event").unsubscribe("*");
+			pb.collection(Collections.RecordingEvents).unsubscribe("*");
 		};
 	});
 </script>
