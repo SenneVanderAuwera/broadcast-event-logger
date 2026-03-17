@@ -4,11 +4,7 @@
 
 	let { data, children }: LayoutProps = $props();
 
-	let recordingController = setRecordingControllerCtx(new RecordingController());
-
-	$effect(() => {
-		recordingController.recordings = data.recordings;
-	});
+	setRecordingControllerCtx(new RecordingController());
 </script>
 
 {@render children()}
