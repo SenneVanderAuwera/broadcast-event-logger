@@ -5,9 +5,10 @@ import { pb } from "$lib/pocketbase";
 
 export const load = (async ({ params, fetch }) => {
 	try {
-		const eventsResponse = await pb.collection(Collections.RecordingEvents).getFullList({ filter: `recording="${params.id}"`, expand: "", sort: "timestamp", fetch });
+		const recordingResponse = pb.collection(Collections.Recordings).getOne(params.id, { fetch });
+		const eventsResponse = pb.collection(Collections.RecordingEvents).getFullList({ filter: `recording="${params.id}"`, expand: "", sort: "timestamp", fetch });
 
-		return { events: eventsResponse };
+		return { recording: await recordingResponse, events: await eventsResponse };
 	} catch (err) {
 		if (err instanceof ClientResponseError && err.status !== 404) console.error(err);
 	}

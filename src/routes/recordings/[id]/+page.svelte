@@ -7,11 +7,10 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import type { PageProps } from "./$types";
 
-	import { page } from "$app/state";
 	import { eventStyles } from "$lib/components/events/colors";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
+	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
 	import Ban from "@lucide/svelte/icons/ban";
@@ -25,7 +24,6 @@
 	const recordingController = getRecordingControllerCtx();
 
 	let events = $derived(data.events);
-	let loadedRecording = $derived(recordingController.getSelectedRecording(page.params.id ?? "") as RecordingsResponse);
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
@@ -62,13 +60,13 @@
 	<div class="w-full flex flex-col gap-2">
 		<RecordingCard>
 			{#snippet left()}
-				<span class="text-xl font-bold"> {loadedRecording.recording_name} </span>
+				<span class="text-xl font-bold"> {data.recording.recording_name} </span>
 			{/snippet}
 			{#snippet center()}
-				<span class="text-xl font-bold"> {loadedRecording.filename} </span>
+				<span class="text-xl font-bold"> {data.recording.filename} </span>
 			{/snippet}
 			{#snippet right()}
-				<span> {DateTime.fromSQL(loadedRecording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+				<span> {DateTime.fromSQL(data.recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 			{/snippet}
 		</RecordingCard>
 
@@ -76,7 +74,7 @@
 
 		<div class="flex flex-col gap-1">
 			{#each events as event}
-				<EventCard recording={loadedRecording} data={event} />
+				<EventCard recording={data.recording} data={event} />
 			{/each}
 		</div>
 
@@ -86,9 +84,9 @@
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
-					<Button onclick={() => createNewEvent(loadedRecording?.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
+					<Button onclick={() => createNewEvent(data.recording.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(data.recording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
+					<Button onclick={() => createNewEvent(data.recording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
 				</div>
 			</div>
 		{:else}
@@ -97,10 +95,10 @@
 					<span class="text-xl font-bold"> Recording end </span>
 				{/snippet}
 				{#snippet center()}
-					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(loadedRecording.start), DateTime.fromSQL(loadedRecording.stop)).toFormat("hh:mm:ss")}</span>
+					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(data.recording.start), DateTime.fromSQL(data.recording.stop)).toFormat("hh:mm:ss")}</span>
 				{/snippet}
 				{#snippet right()}
-					<span> {DateTime.fromSQL(loadedRecording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+					<span> {DateTime.fromSQL(data.recording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 				{/snippet}
 			</RecordingCard>
 		{/if}
