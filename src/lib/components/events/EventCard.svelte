@@ -11,8 +11,6 @@
 
 	let color = $derived(eventStyles["default"][type]);
 	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp)));
-
-	function updateEventRecord() {}
 </script>
 
 <div class="flex items-center border shadow-md rounded-lg print:border-2 print:shadow-none">
