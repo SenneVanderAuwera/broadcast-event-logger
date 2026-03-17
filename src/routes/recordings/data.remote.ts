@@ -1,9 +1,9 @@
 import { query } from "$app/server";
 import { pb } from "$lib/pocketbase";
-import type { RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
 
 export const getRecordings = query(async () => {
-	const recordings = await pb.collection("recording").getFullList<RecordingsResponse>({
+	const recordings = await pb.collection(Collections.Recordings).getFullList<RecordingsResponse>({
 		sort: "-created",
 	});
 

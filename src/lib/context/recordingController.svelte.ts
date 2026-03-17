@@ -1,6 +1,6 @@
 import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
-import type { RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
 import { error } from "@sveltejs/kit";
 import { getContext, onMount, setContext } from "svelte";
 
@@ -26,7 +26,7 @@ class RecordingController {
 
 	async startRecording() {
 		try {
-			return pb.collection("recording").create<RecordingsResponse>({
+			return pb.collection(Collections.Recordings).create<RecordingsResponse>({
 				start: new Date().toISOString(),
 			});
 		} catch (err) {}
@@ -35,7 +35,7 @@ class RecordingController {
 	async stopRecording() {
 		if (this.#activeRecording) {
 			try {
-				await pb.collection("recording").update<RecordingsResponse>(this.#activeRecording.id, { stop: new Date().toISOString() });
+				await pb.collection(Collections.Recordings).update<RecordingsResponse>(this.#activeRecording.id, { stop: new Date().toISOString() });
 				invalidate("recordings:non-archived");
 			} catch (err) {}
 		}
