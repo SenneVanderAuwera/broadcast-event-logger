@@ -3,7 +3,7 @@
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { DateTime } from "luxon";
 	import { eventStyles } from "./colors";
-	import EventCardInputButton from "./EventCardInputButton.svelte";
+	import EventCardInput from "./EventCardInput.svelte";
 
 	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
@@ -19,7 +19,7 @@
 
 	<div class={["rounded-lg px-3 py-3 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color]}>
 		<header class="flex justify-between mb-0 items-center">
-			<EventCardInputButton buttonClass={"text-lg font-bold px-1 h-9 min-w-44 justify-start! hover:bg-white/20 hover:text-white/90"} inputClass={"border-0 text-lg! font-bold px-1 bg-white/20 w-44 focus-visible:ring-0"} bind:event />
+			<EventCardInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:event />
 			<span class=""> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 		</header>
 
