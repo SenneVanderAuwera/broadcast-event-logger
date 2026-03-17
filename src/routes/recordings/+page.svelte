@@ -11,6 +11,10 @@
 
 	const recordingController = getRecordingControllerCtx();
 
+	$effect(() => {
+		recordingController.recordings = data.recordings;
+	});
+
 	async function startNewRecording() {
 		const r = await recordingController.startRecording();
 		window.location.href = `/recordings/${r.id}`;
