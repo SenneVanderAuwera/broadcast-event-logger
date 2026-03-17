@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { invalidateAll } from "$app/navigation";
+	import { pb } from "$lib/pocketbase";
 	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { DateTime } from "luxon";
+	import { toast } from "svelte-sonner";
+	import { slide } from "svelte/transition";
 	import { eventStyles } from "./colors";
 	import EventCardInput from "./EventCardInput.svelte";
-	import { pb } from "$lib/pocketbase";
-	import { toast } from "svelte-sonner";
-	import { invalidateAll } from "$app/navigation";
 
 	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
@@ -47,7 +48,9 @@
 		</header>
 
 		{#if event.message !== "" || isHovered}
-			<EventCardInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! focus-visible:ring-0"} bind:value={event.message} onchange={handleInputChange} />
+			<p transition:slide={{ duration: 250 }} class="text-sm whitespace-pre-wrap">
+				<EventCardInput className={"bg-transparent! border-0 text-lg! px-1 hover:bg-white/20! focus-visible:ring-0"} bind:value={event.message} onchange={handleInputChange} />
+			</p>
 		{/if}
 	</div>
 </div>
