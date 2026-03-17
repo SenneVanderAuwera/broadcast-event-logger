@@ -1,11 +1,11 @@
-import type { RecordingEventsResponse, RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
 import { ClientResponseError } from "pocketbase";
 import type { PageLoad } from "./$types";
 import { pb } from "$lib/pocketbase";
 
 export const load = (async ({ params, fetch }) => {
 	try {
-		const eventsResponse = await pb.collection("event").getFullList<RecordingEventsResponse>({ filter: `recording="${params.id}"`, expand: "", sort: "timestamp", fetch });
+		const eventsResponse = await pb.collection(Collections.RecordingEvents).getFullList<RecordingEventsResponse>({ filter: `recording="${params.id}"`, expand: "", sort: "timestamp", fetch });
 
 		return { events: eventsResponse };
 	} catch (err) {
