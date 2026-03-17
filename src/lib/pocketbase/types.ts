@@ -11,8 +11,8 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	Event = "event",
-	Recording = "recording",
+	RecordingEvents = "recording_events",
+	Recordings = "recordings",
 	Users = "users",
 }
 
@@ -94,23 +94,23 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export enum EventTypeOptions {
+export enum RecordingEventsTypeOptions {
 	"info" = "info",
 	"warning" = "warning",
 	"error" = "error",
 }
-export type EventRecord = {
+export type RecordingEventsRecord = {
 	created: IsoAutoDateString
 	id: string
 	message?: string
 	recording: RecordIdString
 	timestamp: IsoDateString
 	title: string
-	type: EventTypeOptions
+	type: RecordingEventsTypeOptions
 	updated: IsoAutoDateString
 }
 
-export type RecordingRecord = {
+export type RecordingsRecord = {
 	archived?: boolean
 	created: IsoAutoDateString
 	filename?: string
@@ -140,8 +140,8 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type EventResponse<Texpand = unknown> = Required<EventRecord> & BaseSystemFields<Texpand>
-export type RecordingResponse<Texpand = unknown> = Required<RecordingRecord> & BaseSystemFields<Texpand>
+export type RecordingEventsResponse<Texpand = unknown> = Required<RecordingEventsRecord> & BaseSystemFields<Texpand>
+export type RecordingsResponse<Texpand = unknown> = Required<RecordingsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -152,8 +152,8 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	event: EventRecord
-	recording: RecordingRecord
+	recording_events: RecordingEventsRecord
+	recordings: RecordingsRecord
 	users: UsersRecord
 }
 
@@ -163,8 +163,8 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	event: EventResponse
-	recording: RecordingResponse
+	recording_events: RecordingEventsResponse
+	recordings: RecordingsResponse
 	users: UsersResponse
 }
 
