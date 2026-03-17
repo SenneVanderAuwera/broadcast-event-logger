@@ -25,6 +25,10 @@
 
 	let events = $derived(data.events);
 
+	$effect(() => {
+		recordingController.recordings = [data.recording];
+	});
+
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
 			if (action === "create") events.push(record);
