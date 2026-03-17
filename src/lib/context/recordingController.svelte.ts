@@ -1,19 +1,17 @@
 import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
 import type { RecordingsResponse } from "$lib/pocketbase/types";
-import { getContext, onMount, setContext } from "svelte";
 import { Collections } from "$lib/pocketbase/types";
+import { createContext } from "svelte";
 
-class RecordingController {
+export class RecordingController {
 	#recordings: RecordingsResponse[] = $state([]);
 	#activeRecording: RecordingsResponse | null = $derived.by(() => {
 		return this.#recordings.find((recording) => !recording.stop) || null;
 	});
 
-	constructor(data: RecordingsResponse[]) {
-		this.#recordings = data;
-
-		onMount(() => {});
+	constructor() {
+		this.#recordings = [];
 	}
 
 	getSelectedRecording(id: RecordingsResponse["id"]) {
@@ -56,13 +54,4 @@ class RecordingController {
 	}
 }
 
-const RECORDING_CONTROLLER_CTX = Symbol("recordingController");
-
-export function setRecordingControllerCtx(data: RecordingsResponse[]) {
-	const controller = new RecordingController(data);
-	return setContext(RECORDING_CONTROLLER_CTX, controller);
-}
-
-export function getRecordingControllerCtx() {
-	return getContext<RecordingController>(RECORDING_CONTROLLER_CTX);
-}
+export const [getRecordingControllerCtx, setRecordingControllerCtx] = createContext<RecordingController>();

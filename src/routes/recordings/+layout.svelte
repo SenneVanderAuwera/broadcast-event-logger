@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { setRecordingControllerCtx } from "$lib/context/recordingController.svelte";
+	import { RecordingController, setRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import type { LayoutProps } from "./$types";
 
 	let { data, children }: LayoutProps = $props();
 
-	let recordingController = $derived(setRecordingControllerCtx(data.recordings));
+	let recordingController = setRecordingControllerCtx(new RecordingController());
+
 	$effect(() => {
 		recordingController.recordings = data.recordings;
 	});
