@@ -50,7 +50,7 @@
 
 		{#if event.message !== "" || isHovered}
 			<p transition:slide={{ duration: 250 }} class="text-sm whitespace-pre-wrap">
-				<HoverTextarea className={"bg-transparent! border-0 text-lg! px-1 hover:bg-white/20! focus-visible:ring-0 min-h-10 h-10"} bind:value={event.message} onchange={handleInputChange} />
+				<HoverTextarea className={"bg-transparent! border-0 text-lg! px-2 hover:bg-white/20! focus-visible:ring-0 min-h-10 h-10 resize-none"} bind:value={event.message} onchange={handleInputChange} />
 			</p>
 		{/if}
 	</div>
