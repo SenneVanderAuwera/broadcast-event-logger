@@ -1,17 +1,19 @@
 import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
-import type { RecordingsResponse } from "$lib/pocketbase/types";
+import type { RecordingEventsResponse, RecordingsResponse } from "$lib/pocketbase/types";
 import { Collections } from "$lib/pocketbase/types";
 import { createContext } from "svelte";
 
 export class RecordingController {
 	#recordings: RecordingsResponse[] = $state([]);
+	#recordingEvents: RecordingEventsResponse[] = $state([]);
 	#activeRecording: RecordingsResponse | null = $derived.by(() => {
 		return this.#recordings.find((recording) => !recording.stop) || null;
 	});
 
 	constructor() {
 		this.#recordings = [];
+		this.#recordingEvents = [];
 	}
 
 	getSelectedRecording(id: RecordingsResponse["id"]) {
@@ -44,6 +46,14 @@ export class RecordingController {
 
 	set recordings(value: RecordingsResponse[]) {
 		this.#recordings = value;
+	}
+
+	get recordingEvents() {
+		return this.#recordingEvents;
+	}
+
+	set recordingEvents(value: RecordingEventsResponse[]) {
+		this.#recordingEvents = value;
 	}
 
 	get state() {

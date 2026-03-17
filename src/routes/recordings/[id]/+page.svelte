@@ -23,17 +23,16 @@
 
 	const recordingController = getRecordingControllerCtx();
 
-	let events = $derived(data.events);
-
 	$effect(() => {
 		recordingController.recordings = [data.recording];
+		recordingController.recordingEvents = data.events;
 	});
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			if (action === "create") events.push(record);
-			if (action === "delete") events = data.events.filter((e) => e.id !== record.id);
-			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
+			if (action === "create") recordingController.recordingEvents.push(record);
+			if (action === "delete") recordingController.recordingEvents = recordingController.recordingEvents.filter((e) => e.id !== record.id);
+			if (action === "update") recordingController.recordingEvents = recordingController.recordingEvents.map((e) => (e.id === record.id ? record : e));
 		});
 
 		return () => {
@@ -77,7 +76,7 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each events as event}
+			{#each recordingController.recordingEvents as event}
 				<EventCard recording={data.recording} data={event} />
 			{/each}
 		</div>
