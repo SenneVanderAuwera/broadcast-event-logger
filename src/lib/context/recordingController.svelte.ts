@@ -1,4 +1,4 @@
-import { invalidate } from "$app/navigation";
+import { invalidate, invalidateAll } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
 import type { RecordingEventsResponse, RecordingsResponse } from "$lib/pocketbase/types";
 import { Collections } from "$lib/pocketbase/types";
@@ -35,7 +35,7 @@ export class RecordingController {
 		if (this.#activeRecording) {
 			try {
 				await pb.collection(Collections.Recordings).update(this.#activeRecording.id, { stop: new Date().toISOString() });
-				invalidate("recordings:non-archived");
+				invalidateAll();
 			} catch (err) {}
 		}
 	}
