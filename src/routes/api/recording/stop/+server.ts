@@ -1,6 +1,6 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
 import { ClientResponseError } from "pocketbase";
 import { DateTime } from "luxon";
 
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	if (recordingStopTimeFromRequest.isValid) recordingStopTime = recordingStopTimeFromRequest;
 
-	let activeRecording: RecordingResponse | undefined = undefined;
+	let activeRecording: RecordingsResponse | undefined = undefined;
 
 	try {
 		activeRecording = await locals.pb.collection("recording").getFirstListItem(`stop=null`);

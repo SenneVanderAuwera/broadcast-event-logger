@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { EventResponse, RecordingResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { DateTime } from "luxon";
 	import { eventStyles } from "./colors";
+	import type { RecordingEventsResponse, RecordingsResponse } from "$lib/pocketbase/types";
 
-	let { data, recording }: { data: EventResponse; recording: RecordingResponse } = $props();
+	let { data, recording }: { data: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
 	const type: "info" | "warning" | "error" = $derived(data.type as "info" | "warning" | "error");
 

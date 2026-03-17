@@ -1,11 +1,12 @@
 import { invalidate } from "$app/navigation";
 import { pb } from "$lib/pocketbase";
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
+import { error } from "@sveltejs/kit";
 import { getContext, onMount, setContext } from "svelte";
 
 class RecordingController {
-	#recordings: RecordingResponse[];
-	#activeRecording: RecordingResponse | null;
+	#recordings: RecordingsResponse[];
+	#activeRecording: RecordingsResponse | null;
 
 	constructor() {
 		this.#recordings = [];
@@ -15,17 +16,17 @@ class RecordingController {
 		onMount(() => {});
 	}
 
-	setRecordings(recordings: RecordingResponse[]) {
+	setRecordings(recordings: RecordingsResponse[]) {
 		this.#recordings = recordings;
 	}
 
-	async getSelectedRecording(id: RecordingResponse["id"]) {
-		return (await this.#recordings).find((recording) => recording.id === id) || null;
+	async getSelectedRecording(id: RecordingsResponse["id"]) {
+		return this.#recordings.find((recording) => recording.id === id) || error(404, "Recording not found");
 	}
 
 	async startRecording() {
 		try {
-			return pb.collection("recording").create<RecordingResponse>({
+			return pb.collection("recording").create<RecordingsResponse>({
 				start: new Date().toISOString(),
 			});
 		} catch (err) {}
@@ -34,7 +35,7 @@ class RecordingController {
 	async stopRecording() {
 		if (this.#activeRecording) {
 			try {
-				await pb.collection("recording").update<RecordingResponse>(this.#activeRecording.id, { stop: new Date().toISOString() });
+				await pb.collection("recording").update<RecordingsResponse>(this.#activeRecording.id, { stop: new Date().toISOString() });
 				invalidate("recordings:non-archived");
 			} catch (err) {}
 		}
@@ -44,7 +45,7 @@ class RecordingController {
 		return this.#recordings;
 	}
 
-	set recordings(value: RecordingResponse[]) {
+	set recordings(value: RecordingsResponse[]) {
 		this.#recordings = value;
 	}
 

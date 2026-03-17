@@ -11,7 +11,7 @@
 	import { eventStyles } from "$lib/components/events/colors";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
-	import type { RecordingResponse } from "$lib/pocketbase/types";
+	import type { RecordingEventsResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
 	import Ban from "@lucide/svelte/icons/ban";
@@ -24,11 +24,11 @@
 
 	const recordingState = getRecordingControllerCtx();
 
-	let events = $state(data.events);
-	let loadedRecording = $derived(recordingState.getSelectedRecording(page.params.id ?? "") as RecordingResponse);
+	let events = $derived(data.events);
+	let loadedRecording = $derived(await recordingState.getSelectedRecording(page.params.id ?? ""));
 
 	onMount(() => {
-		pb.collection("event").subscribe("*", ({ action, record }) => {
+		pb.collection("event").subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
 			if (action === "create") events.push(record);
 			if (action === "delete") events = data.events.filter((e) => e.id !== record.id);
 			if (action === "update") events = data.events.map((e) => (e.id === record.id ? record : e));
@@ -86,7 +86,7 @@
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">
-					<Button onclick={() => createNewEvent(loadedRecording?.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
+					<Button onclick={() => createNewEvent(loadedRecording.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
 					<Button onclick={() => createNewEvent(loadedRecording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
 					<Button onclick={() => createNewEvent(loadedRecording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
 				</div>

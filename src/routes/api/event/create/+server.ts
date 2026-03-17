@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
 import { ClientResponseError } from "pocketbase";
 
 type RequestBodyParams = {
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		requestBody.timestamp = DateTime.fromISO(requestBody.timestamp).toSQL() as string;
 	}
 
-	let activeRecording: RecordingResponse | undefined = undefined;
+	let activeRecording: RecordingsResponse | undefined = undefined;
 
 	try {
 		activeRecording = await locals.pb.collection("recording").getFirstListItem(`stop=null`);

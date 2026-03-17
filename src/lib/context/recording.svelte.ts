@@ -1,16 +1,16 @@
-import type { RecordingResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "$lib/pocketbase/types";
 import { getContext, setContext } from "svelte";
 
 class RecordingState {
-	recordings: RecordingResponse[] = $state([]);
-	activeRecording: RecordingResponse | null = $derived.by(() => {
+	recordings: RecordingsResponse[] = $state([]);
+	activeRecording: RecordingsResponse | null = $derived.by(() => {
 		if (!this.recordings) return null;
 		return this.recordings.find((r) => !r.stop) || null;
 	});
 
 	constructor() {}
 
-	init(records: RecordingResponse[]) {
+	init(records: RecordingsResponse[]) {
 		this.recordings = records;
 	}
 
