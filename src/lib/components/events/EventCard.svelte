@@ -3,27 +3,30 @@
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { DateTime } from "luxon";
 	import { eventStyles } from "./colors";
+	import EventCardInputButton from "./EventCardInputButton.svelte";
 
-	let { data, recording }: { data: RecordingEventsResponse; recording: RecordingsResponse } = $props();
+	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
-	const type: "info" | "warning" | "error" = $derived(data.type as "info" | "warning" | "error");
+	const type: "info" | "warning" | "error" = $derived(event.type as "info" | "warning" | "error");
 
 	let color = $derived(eventStyles["default"][type]);
-	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(data.timestamp)));
+	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp)));
+
+	function updateEventRecord() {}
 </script>
 
 <div class="flex items-center border shadow-md rounded-lg print:border-2 print:shadow-none">
 	<div class="hidden print:block ms-2 size-8 border-2 rounded-md"></div>
 	<div class="basis-48 text-center">{duration.toFormat("hh:mm:ss")}</div>
 
-	<div class={["rounded-lg p-4 space-y-3 flex-1 print:p-1 pointer-events-none print:bg-transparent print:text-foreground", color]}>
-		<header class="flex justify-between mb-0">
-			<span class={["text-xl font-bold", eventStyles["print"][type]]}> {data.title} </span>
-			<span> {DateTime.fromSQL(data.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+	<div class={["rounded-lg p-4 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color]}>
+		<header class="flex justify-between mb-0 items-center">
+			<EventCardInputButton bind:event />
+			<span class=""> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 		</header>
 
 		<p>
-			{data.message}
+			{event.message}
 		</p>
 	</div>
 </div>

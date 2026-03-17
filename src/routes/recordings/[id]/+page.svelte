@@ -76,8 +76,8 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingController.recordingEvents as event}
-				<EventCard recording={data.recording} data={event} />
+			{#each recordingController.recordingEvents as event, i}
+				<EventCard recording={data.recording} bind:event={recordingController.recordingEvents[i]} />
 			{/each}
 		</div>
 
