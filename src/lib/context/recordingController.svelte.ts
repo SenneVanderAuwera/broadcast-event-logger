@@ -46,7 +46,7 @@ export class RecordingController {
 		this.#recordings = value;
 	}
 
-	get data() {
+	get state() {
 		return {
 			active: this.#activeRecording !== null,
 			record: this.#activeRecording,

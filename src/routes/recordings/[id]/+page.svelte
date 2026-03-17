@@ -49,7 +49,7 @@
 
 <Nav>
 	{#snippet right()}
-		{#if recordingController.data.active}
+		{#if recordingController.state.active}
 			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
@@ -80,7 +80,7 @@
 
 		{@render separator()}
 
-		{#if recordingController.data.active}
+		{#if recordingController.state.active}
 			<div class="flex">
 				<div class="basis-48"></div>
 				<div class="flex-1">

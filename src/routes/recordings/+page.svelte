@@ -23,8 +23,8 @@
 
 <Nav>
 	{#snippet right()}
-		{#if recordingController.data.active}
-			<Button href={`/recordings/${recordingController.data.record?.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
+		{#if recordingController.state.active}
+			<Button href={`/recordings/${recordingController.state.record?.id}`} variant="destructive" class="hover:bg-destructive/80">Go to active recording</Button>
 		{:else}
 			<Button variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white hover:cursor-pointer" onclick={startNewRecording}>Start new recording</Button>
 		{/if}
