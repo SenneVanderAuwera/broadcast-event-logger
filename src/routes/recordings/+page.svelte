@@ -19,7 +19,9 @@
 
 	$effect(() => {
 		recordingController.recordings = data.recordings;
-		selected = data.recordings.map(() => false);
+		if (selected.length !== data.recordings.length) {
+			selected = data.recordings.map(() => false);
+		}
 	});
 
 	let hasSelection = $derived(selected.some(Boolean));
