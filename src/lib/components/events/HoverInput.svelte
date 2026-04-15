@@ -6,8 +6,9 @@
 		value: string;
 		className?: ClassValue;
 		onchange?: () => void;
+		disabled?: boolean;
 	};
-	let { value = $bindable(), className = "", onchange }: Props = $props();
+	let { value = $bindable(), className = "", onchange, disabled = false }: Props = $props();
 
 	let input = $state<HTMLInputElement | null>(null);
 
@@ -23,4 +24,4 @@
 	}
 </script>
 
-<Input bind:ref={input} class={[className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} />
+<Input bind:ref={input} class={["disabled:text-current disabled:opacity-100 disabled:cursor-default disabled:hover:bg-transparent!", className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} {disabled} />

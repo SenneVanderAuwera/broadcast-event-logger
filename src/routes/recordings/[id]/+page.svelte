@@ -7,19 +7,21 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import type { PageProps } from "./$types";
 
+	import { invalidateAll } from "$app/navigation";
 	import { eventStyles } from "$lib/components/events/colors";
+	import HoverInput from "$lib/components/events/HoverInput.svelte";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
 	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
 	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
 	import { createNewEvent } from "$lib/utils/events";
+	import Archive from "@lucide/svelte/icons/archive";
+	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import Ban from "@lucide/svelte/icons/ban";
 	import Info from "@lucide/svelte/icons/info";
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import { DateTime } from "luxon";
 	import { onMount } from "svelte";
-	import HoverInput from "$lib/components/events/HoverInput.svelte";
-	import { invalidateAll } from "$app/navigation";
 	import { toast } from "svelte-sonner";
 
 	let { data }: PageProps = $props();
@@ -43,6 +45,16 @@
 			console.error(err);
 			invalidateAll();
 		}
+	}
+
+	async function archiveRecording() {
+		await pb.collection(Collections.Recordings).update(recording.id, { archived: true });
+		invalidateAll();
+	}
+
+	async function restoreRecording() {
+		await pb.collection(Collections.Recordings).update(recording.id, { archived: false });
+		invalidateAll();
 	}
 
 	onMount(() => {
@@ -69,8 +81,12 @@
 
 <Nav>
 	{#snippet right()}
-		{#if recordingController.state.active}
+		{#if recording.archived}
+			<Button variant="outline" class="hover:cursor-pointer" onclick={restoreRecording}><ArchiveRestore /> Restore</Button>
+		{:else if recordingController.state.active}
 			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+		{:else}
+			<Button variant="outline" class="hover:cursor-pointer" onclick={archiveRecording}><Archive /> Archive</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
@@ -80,7 +96,7 @@
 	<div class="w-full flex flex-col gap-2">
 		<RecordingCard>
 			{#snippet left()}
-				<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:value={recording.recording_name} onchange={handleRecordingNameChange} />
+				<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:value={recording.recording_name} onchange={handleRecordingNameChange} disabled={recording.archived} />
 			{/snippet}
 			{#snippet center()}
 				<span class="text-xl font-bold"> {recording.filename} </span>
