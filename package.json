@@ -1,7 +1,7 @@
 {
 	"name": "broadcast-event-logger",
 	"private": true,
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -13,14 +13,14 @@
 		"typegen": "npx pocketbase-typegen --db ./pocketbase/pb_data/data.db -o ./src/lib/pocketbase/types.ts"
 	},
 	"devDependencies": {
-		"@internationalized/date": "^3.11.0",
-		"@lucide/svelte": "^0.561.0",
+		"@internationalized/date": "^3.12.1",
+		"@lucide/svelte": "^1.8.0",
 		"@sveltejs/adapter-node": "^5.5.3",
 		"@sveltejs/kit": "^2.53.0",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/vite": "^4.2.0",
 		"@types/luxon": "^3.7.1",
-		"bits-ui": "^2.16.1",
+		"bits-ui": "^2.17.3",
 		"clsx": "^2.1.1",
 		"gsap": "^3.14.2",
 		"luxon": "^3.7.2",

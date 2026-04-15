@@ -8,8 +8,9 @@
 		value: string;
 		className?: ClassValue;
 		onchange?: () => void;
+		disabled?: boolean;
 	};
-	let { value = $bindable(), className = "", onchange }: Props = $props();
+	let { value = $bindable(), className = "", onchange, disabled = false }: Props = $props();
 
 	let textarea = $state<HTMLTextAreaElement | null>(null);
 
@@ -35,4 +36,14 @@
 	});
 </script>
 
-<Textarea oninput={autoHeight} cols={1} bind:ref={textarea} class={[className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} />
+<Textarea
+	oninput={autoHeight}
+	cols={1}
+	bind:ref={textarea}
+	class={["disabled:text-current disabled:opacity-100 disabled:cursor-default disabled:hover:bg-transparent!", className]}
+	bind:value
+	onfocuscapture={handleInputFocus}
+	{onchange}
+	onkeydown={handleEnterKey}
+	{disabled}
+/>
