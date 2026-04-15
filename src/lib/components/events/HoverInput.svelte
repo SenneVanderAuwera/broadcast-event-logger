@@ -24,4 +24,4 @@
 	}
 </script>
 
-<Input bind:ref={input} class={["disabled:text-current disabled:opacity-100 disabled:cursor-default", className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} {disabled} />
+<Input bind:ref={input} class={["disabled:text-current disabled:opacity-100 disabled:cursor-default disabled:hover:bg-transparent!", className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} {disabled} />

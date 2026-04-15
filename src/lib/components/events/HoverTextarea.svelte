@@ -36,4 +36,14 @@
 	});
 </script>
 
-<Textarea oninput={autoHeight} cols={1} bind:ref={textarea} class={["disabled:text-current disabled:opacity-100 disabled:cursor-default", className]} bind:value onfocuscapture={handleInputFocus} {onchange} onkeydown={handleEnterKey} {disabled} />
+<Textarea
+	oninput={autoHeight}
+	cols={1}
+	bind:ref={textarea}
+	class={["disabled:text-current disabled:opacity-100 disabled:cursor-default disabled:hover:bg-transparent!", className]}
+	bind:value
+	onfocuscapture={handleInputFocus}
+	{onchange}
+	onkeydown={handleEnterKey}
+	{disabled}
+/>
