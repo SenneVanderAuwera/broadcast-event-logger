@@ -8,11 +8,7 @@
 	import type { PageData } from "../$types";
 	import { DateTime } from "luxon";
 
-	let {
-		active = false,
-		data,
-		selected = $bindable(false),
-	}: { active?: boolean; data: PageData["recordings"][0]; selected?: boolean } = $props();
+	let { active = false, data, selected = $bindable(false) }: { active?: boolean; data: PageData["recordings"][0]; selected: boolean } = $props();
 
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(data.id, { archived: true });

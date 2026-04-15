@@ -15,7 +15,7 @@
 
 	const recordingController = getRecordingControllerCtx();
 
-	let selected: boolean[] = $state([]);
+	let selected: boolean[] = $state((() => data.recordings.map(() => false))());
 
 	$effect(() => {
 		recordingController.recordings = data.recordings;
@@ -25,9 +25,7 @@
 	});
 
 	let hasSelection = $derived(selected.some(Boolean));
-	let allSelected = $derived(
-		data.recordings.length > 0 && selected.length === data.recordings.length && selected.every(Boolean),
-	);
+	let allSelected = $derived(data.recordings.length > 0 && selected.length === data.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
 	function toggleSelectAll() {
@@ -76,12 +74,7 @@
 <div class="w-2/3 mx-auto">
 	{#if data.recordings.length > 0}
 		<div class="flex items-center gap-2 mt-10 mb-2 px-1">
-			<Checkbox
-				checked={allSelected}
-				indeterminate={someSelected}
-				onCheckedChange={toggleSelectAll}
-				aria-label="Select all recordings"
-			/>
+			<Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} aria-label="Select all recordings" />
 			<span class="text-sm text-muted-foreground">Select all</span>
 		</div>
 	{/if}
