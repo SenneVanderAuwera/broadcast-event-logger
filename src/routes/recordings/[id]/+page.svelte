@@ -86,8 +86,9 @@
 		{:else}
 			{#if recordingController.state.active}
 				<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+			{:else}
+				<Button variant="outline" class="hover:cursor-pointer" onclick={archiveRecording}><Archive /> Archive</Button>
 			{/if}
-			<Button variant="outline" class="hover:cursor-pointer" onclick={archiveRecording}><Archive /> Archive</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
