@@ -10,7 +10,6 @@
 	import { DateTime } from "luxon";
 
 	let { active = false, archived = false, data, selected = $bindable(false) }: { active?: boolean; archived?: boolean; data: PageData["recordings"][0]; selected: boolean } = $props();
-
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(data.id, { archived: true });
 		invalidate("recordings:non-archived");

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidate } from "$app/navigation";
+	import { invalidate, invalidateAll } from "$app/navigation";
 	import RecordingCard from "./components/recording-card.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
@@ -11,12 +11,23 @@
 	import { Collections } from "$lib/pocketbase/types";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
+	import { onMount } from "svelte";
 
 	let { data }: PageProps = $props();
 
 	const recordingController = getRecordingControllerCtx();
 
 	let selected: boolean[] = $state((() => data.recordings.map(() => false))());
+
+	onMount(() => {
+		pb.collection(Collections.Recordings).subscribe("*", async () => {
+			await invalidateAll();
+		});
+
+		return () => {
+			pb.collection(Collections.Recordings).unsubscribe("*");
+		};
+	});
 
 	$effect(() => {
 		recordingController.recordings = data.recordings;
@@ -83,7 +94,7 @@
 		</div>
 	{/if}
 	<div class="w-full mx-auto flex flex-col gap-2">
-		{#each data.recordings as recording, i}
+		{#each data.recordings as recording, i (recording.id)}
 			<RecordingCard data={recording} bind:selected={selected[i]}></RecordingCard>
 		{/each}
 	</div>
