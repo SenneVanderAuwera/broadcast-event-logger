@@ -69,8 +69,8 @@
 		});
 
 		return () => {
-			pb.collection(Collections.Recordings).unsubscribe("*");
-			pb.collection(Collections.RecordingEvents).unsubscribe("*");
+			pb.collection(Collections.Recordings).unsubscribe();
+			pb.collection(Collections.RecordingEvents).unsubscribe();
 		};
 	});
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidate, invalidateAll } from "$app/navigation";
+	import { goto, invalidate, invalidateAll } from "$app/navigation";
 	import RecordingCard from "./components/recording-card.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
@@ -11,7 +11,7 @@
 	import { Collections } from "$lib/pocketbase/types";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 
 	let { data }: PageProps = $props();
 
@@ -20,8 +20,17 @@
 	let selected: boolean[] = $state((() => data.recordings.map(() => false))());
 
 	onMount(() => {
-		pb.collection(Collections.Recordings).subscribe("*", async () => {
-			await invalidateAll();
+		pb.collection(Collections.Recordings).subscribe("*", async ({ action, record }) => {
+			if (action === "create") {
+				await invalidateAll();
+			} else if (action === "update") {
+				let recording = recordingController.recordings.find((r) => r.id === record.id);
+				if (recording) {
+					recording = { ...recording, ...record };
+				}
+			} else if (action === "delete") {
+				recordingController.recordings = recordingController.recordings.filter((r) => r.id !== record.id);
+			}
 		});
 
 		return () => {
@@ -57,12 +66,16 @@
 			batch.collection(Collections.Recordings).update(recording.id, { archived: true });
 		}
 		await batch.send();
-		invalidate("recordings:non-archived");
 	}
 
 	async function startNewRecording() {
-		const r = await recordingController.startRecording();
-		window.location.href = `/recordings/${r.id}`;
+		try {
+			const r = await recordingController.startRecording();
+			await tick();
+			goto(`/recordings/${r.id}`);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 </script>
 
