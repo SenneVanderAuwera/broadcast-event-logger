@@ -64,7 +64,12 @@
 			if (action === "update") recordingController.recordingEvents = recordingController.recordingEvents.map((e) => (e.id === record.id ? record : e));
 		});
 
+		pb.collection(Collections.Recordings).subscribe(recording.id, async () => {
+			await invalidateAll();
+		});
+
 		return () => {
+			pb.collection(Collections.Recordings).unsubscribe("*");
 			pb.collection(Collections.RecordingEvents).unsubscribe("*");
 		};
 	});
@@ -109,7 +114,7 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingController.recordingEvents as event, i}
+			{#each recordingController.recordingEvents as event, i (event.id)}
 				<EventCard recording={data.recording} bind:event={recordingController.recordingEvents[i]} />
 			{/each}
 		</div>
