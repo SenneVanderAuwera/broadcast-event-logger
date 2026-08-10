@@ -18,6 +18,7 @@
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import Ban from "@lucide/svelte/icons/ban";
+	import Download from "@lucide/svelte/icons/download";
 	import Info from "@lucide/svelte/icons/info";
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 	import { DateTime } from "luxon";
@@ -57,6 +58,70 @@
 		invalidateAll();
 	}
 
+	function parseDateTime(value: string) {
+		const sqlDateTime = DateTime.fromSQL(value);
+		if (sqlDateTime.isValid) return sqlDateTime;
+
+		return DateTime.fromISO(value);
+	}
+
+	function getEventColor(type: RecordingEventsResponse["type"]) {
+		if (type === "warning") return "Yellow";
+		if (type === "error") return "Red";
+		return "Blue";
+	}
+
+	function escapeCsvValue(value: string) {
+		return `"${value.replaceAll('"', '""')}"`;
+	}
+
+	function exportRecordingEventsCsv() {
+		const recordingStart = parseDateTime(recording.start);
+
+		if (!recordingStart.isValid) {
+			toast.error("Failed to export CSV");
+			return;
+		}
+
+		const rows = recordingController.recordingEvents.map((event) => {
+			const eventTimestamp = parseDateTime(event.timestamp);
+			const relativeTimestamp = eventTimestamp.isValid
+				? getRelativeDuration(recordingStart, eventTimestamp).toFormat("hh:mm:ss")
+				: "";
+			const actualTimestamp = eventTimestamp.isValid
+				? eventTimestamp.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)
+				: "";
+
+			return [
+				getEventColor(event.type),
+				event.title,
+				event.message,
+				relativeTimestamp,
+				actualTimestamp
+			]
+				.map((value) => escapeCsvValue(value ?? ""))
+				.join(",");
+		});
+
+		const csv = [
+			["Color", "Event name", "Event description", "Timestamp (based on zero time)", "Timestamp (actual date and time)"].map(escapeCsvValue).join(","),
+			...rows
+		].join("\r\n");
+
+		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		const recordingName = recording.recording_name.trim() || recording.filename.trim() || recording.id;
+		const safeRecordingName = recordingName.replaceAll(/[^a-z0-9-_]+/gi, "-").replaceAll(/^-+|-+$/g, "") || "recording";
+
+		link.href = url;
+		link.download = `${safeRecordingName}-events.csv`;
+		link.click();
+		URL.revokeObjectURL(url);
+
+		toast.success("CSV exported");
+	}
+
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
 			if (action === "create") recordingController.recordingEvents.push(record);
@@ -86,6 +151,10 @@
 
 <Nav>
 	{#snippet right()}
+		<Button variant="outline" class="hover:cursor-pointer" onclick={exportRecordingEventsCsv} disabled={!recording.id}>
+			<Download />
+			Export CSV
+		</Button>
 		{#if recording.archived}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={restoreRecording}><ArchiveRestore /> Restore</Button>
 		{:else if recordingController.state.active}
