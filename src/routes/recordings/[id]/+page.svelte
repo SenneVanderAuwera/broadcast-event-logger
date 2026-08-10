@@ -104,7 +104,7 @@
 		});
 
 		const csv = [
-			["Color", "Event name", "Event description", "Timestamp (based on zero time)", "Timestamp (actual date and time)"].map(escapeCsvValue).join(","),
+			["Color", "Event name", "Event description", "Timecode", "Timestamp"].map(escapeCsvValue).join(","),
 			...rows
 		].join("\r\n");
 
