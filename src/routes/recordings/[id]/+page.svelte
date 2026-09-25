@@ -1,6 +1,8 @@
 <script lang="ts">
 	import EventCard from "$lib/components/events/EventCard.svelte";
-	import RecordingCard from "$lib/components/events/RecordingCard.svelte";
+	import NewEventButtons from "$lib/components/events/NewEventButtons.svelte";
+	import RecordingEnd from "$lib/components/events/RecordingEnd.svelte";
+	import RecordingSummary from "$lib/components/events/RecordingSummary.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
@@ -8,19 +10,13 @@
 	import type { PageProps } from "./$types";
 
 	import { invalidateAll } from "$app/navigation";
-	import { eventStyles } from "$lib/components/events/colors";
-	import HoverInput from "$lib/components/events/HoverInput.svelte";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
 	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
-	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
-	import { createNewEvent } from "$lib/utils/events";
+	import { exportRecordingEventsCsv as createCsvDownload } from "$lib/utils/exportRecordingEventsCsv";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
-	import Ban from "@lucide/svelte/icons/ban";
-	import Info from "@lucide/svelte/icons/info";
-	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
-	import { DateTime } from "luxon";
+	import Download from "@lucide/svelte/icons/download";
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 
@@ -37,16 +33,6 @@
 		recordingController.recordingEvents = data.events;
 	});
 
-	async function handleRecordingNameChange() {
-		try {
-			await pb.collection(Collections.Recordings).update(recording.id, { ...recording });
-		} catch (err) {
-			toast.error("Failed to update event title");
-			console.error(err);
-			invalidateAll();
-		}
-	}
-
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: true });
 		invalidateAll();
@@ -55,6 +41,14 @@
 	async function restoreRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: false });
 		invalidateAll();
+	}
+
+	function exportRecordingEventsCsv() {
+		if (!createCsvDownload(recording, recordingController.recordingEvents)) {
+			toast.error("Failed to export CSV");
+			return;
+		}
+		toast.success("CSV exported");
 	}
 
 	onMount(() => {
@@ -86,6 +80,10 @@
 
 <Nav>
 	{#snippet right()}
+		<Button variant="outline" class="hover:cursor-pointer" onclick={exportRecordingEventsCsv} disabled={!recording.id}>
+			<Download />
+			Export CSV
+		</Button>
 		{#if recording.archived}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={restoreRecording}><ArchiveRestore /> Restore</Button>
 		{:else if recordingController.state.active}
@@ -99,17 +97,7 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingCard>
-			{#snippet left()}
-				<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:value={recording.recording_name} onchange={handleRecordingNameChange} disabled={recording.archived} />
-			{/snippet}
-			{#snippet center()}
-				<span class="text-xl font-bold"> {recording.filename} </span>
-			{/snippet}
-			{#snippet right()}
-				<span> {DateTime.fromSQL(recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
-			{/snippet}
-		</RecordingCard>
+		<RecordingSummary {recording} />
 
 		{@render separator()}
 
@@ -122,26 +110,9 @@
 		{@render separator()}
 
 		{#if recordingController.state.active}
-			<div class="flex">
-				<div class="basis-48"></div>
-				<div class="flex-1">
-					<Button onclick={() => createNewEvent(recording.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(recording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(recording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
-				</div>
-			</div>
+			<NewEventButtons recordingId={recording.id} />
 		{:else}
-			<RecordingCard>
-				{#snippet left()}
-					<span class="text-xl font-bold"> Recording end </span>
-				{/snippet}
-				{#snippet center()}
-					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(recording.stop)).toFormat("hh:mm:ss")}</span>
-				{/snippet}
-				{#snippet right()}
-					<span> {DateTime.fromSQL(recording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
-				{/snippet}
-			</RecordingCard>
+			<RecordingEnd {recording} />
 		{/if}
 	</div>
 </div>
