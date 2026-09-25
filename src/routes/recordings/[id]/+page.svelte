@@ -1,6 +1,8 @@
 <script lang="ts">
 	import EventCard from "$lib/components/events/EventCard.svelte";
-	import RecordingCard from "$lib/components/events/RecordingCard.svelte";
+	import NewEventButtons from "$lib/components/events/NewEventButtons.svelte";
+	import RecordingEnd from "$lib/components/events/RecordingEnd.svelte";
+	import RecordingSummary from "$lib/components/events/RecordingSummary.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
@@ -8,20 +10,13 @@
 	import type { PageProps } from "./$types";
 
 	import { invalidateAll } from "$app/navigation";
-	import { eventStyles } from "$lib/components/events/colors";
-	import HoverInput from "$lib/components/events/HoverInput.svelte";
 	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
 	import { pb } from "$lib/pocketbase";
 	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
-	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
-	import { createNewEvent } from "$lib/utils/events";
+	import { exportRecordingEventsCsv as createCsvDownload } from "$lib/utils/exportRecordingEventsCsv";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
-	import Ban from "@lucide/svelte/icons/ban";
 	import Download from "@lucide/svelte/icons/download";
-	import Info from "@lucide/svelte/icons/info";
-	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
-	import { DateTime } from "luxon";
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 
@@ -38,16 +33,6 @@
 		recordingController.recordingEvents = data.events;
 	});
 
-	async function handleRecordingNameChange() {
-		try {
-			await pb.collection(Collections.Recordings).update(recording.id, { ...recording });
-		} catch (err) {
-			toast.error("Failed to update event title");
-			console.error(err);
-			invalidateAll();
-		}
-	}
-
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: true });
 		invalidateAll();
@@ -58,67 +43,11 @@
 		invalidateAll();
 	}
 
-	function parseDateTime(value: string) {
-		const sqlDateTime = DateTime.fromSQL(value);
-		if (sqlDateTime.isValid) return sqlDateTime;
-
-		return DateTime.fromISO(value);
-	}
-
-	function getEventColor(type: RecordingEventsResponse["type"]) {
-		if (type === "warning") return "Yellow";
-		if (type === "error") return "Red";
-		return "Blue";
-	}
-
-	function escapeCsvValue(value: string) {
-		return `"${value.replaceAll('"', '""')}"`;
-	}
-
 	function exportRecordingEventsCsv() {
-		const recordingStart = parseDateTime(recording.start);
-
-		if (!recordingStart.isValid) {
+		if (!createCsvDownload(recording, recordingController.recordingEvents)) {
 			toast.error("Failed to export CSV");
 			return;
 		}
-
-		const rows = recordingController.recordingEvents.map((event) => {
-			const eventTimestamp = parseDateTime(event.timestamp);
-			const relativeTimestamp = eventTimestamp.isValid
-				? getRelativeDuration(recordingStart, eventTimestamp).toFormat("hh:mm:ss")
-				: "";
-			const actualTimestamp = eventTimestamp.isValid
-				? eventTimestamp.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)
-				: "";
-
-			return [
-				getEventColor(event.type),
-				event.title,
-				event.message,
-				relativeTimestamp,
-				actualTimestamp
-			]
-				.map((value) => escapeCsvValue(value ?? ""))
-				.join(",");
-		});
-
-		const csv = [
-			["Color", "Event name", "Event description", "Timecode", "Timestamp"].map(escapeCsvValue).join(","),
-			...rows
-		].join("\r\n");
-
-		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement("a");
-		const recordingName = recording.recording_name.trim() || recording.filename.trim() || recording.id;
-		const safeRecordingName = recordingName.replaceAll(/[^a-z0-9-_]+/gi, "-").replaceAll(/^-+|-+$/g, "") || "recording";
-
-		link.href = url;
-		link.download = `${safeRecordingName}-events.csv`;
-		link.click();
-		URL.revokeObjectURL(url);
-
 		toast.success("CSV exported");
 	}
 
@@ -168,17 +97,7 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingCard>
-			{#snippet left()}
-				<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:value={recording.recording_name} onchange={handleRecordingNameChange} disabled={recording.archived} />
-			{/snippet}
-			{#snippet center()}
-				<span class="text-xl font-bold"> {recording.filename} </span>
-			{/snippet}
-			{#snippet right()}
-				<span> {DateTime.fromSQL(recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
-			{/snippet}
-		</RecordingCard>
+		<RecordingSummary {recording} />
 
 		{@render separator()}
 
@@ -191,26 +110,9 @@
 		{@render separator()}
 
 		{#if recordingController.state.active}
-			<div class="flex">
-				<div class="basis-48"></div>
-				<div class="flex-1">
-					<Button onclick={() => createNewEvent(recording.id, "info", DateTime.now())} size="icon" class={[eventStyles.default.info, eventStyles.hover.info, "cursor-pointer"]}><Info /></Button>
-					<Button onclick={() => createNewEvent(recording.id, "warning", DateTime.now())} size="icon" class={[eventStyles.default.warning, eventStyles.hover.warning, "cursor-pointer"]}><TriangleAlert /></Button>
-					<Button onclick={() => createNewEvent(recording.id, "error", DateTime.now())} size="icon" class={[eventStyles.default.error, eventStyles.hover.error, "cursor-pointer"]}><Ban /></Button>
-				</div>
-			</div>
+			<NewEventButtons recordingId={recording.id} />
 		{:else}
-			<RecordingCard>
-				{#snippet left()}
-					<span class="text-xl font-bold"> Recording end </span>
-				{/snippet}
-				{#snippet center()}
-					<span class="text-xl font-bold"> {getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(recording.stop)).toFormat("hh:mm:ss")}</span>
-				{/snippet}
-				{#snippet right()}
-					<span> {DateTime.fromSQL(recording.stop).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
-				{/snippet}
-			</RecordingCard>
+			<RecordingEnd {recording} />
 		{/if}
 	</div>
 </div>
