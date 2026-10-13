@@ -25,9 +25,9 @@ jobs:
 
       - name: Create Release Pull Request
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          title: Release new version
-          publish: npx @changesets/cli tag
+          pr-title: Release new version
+          publish-script: npx @changesets/cli git-tag
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
