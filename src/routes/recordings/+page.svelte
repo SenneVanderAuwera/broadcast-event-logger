@@ -24,10 +24,7 @@
 			if (action === "create") {
 				await invalidateAll();
 			} else if (action === "update") {
-				let recording = recordingController.recordings.find((r) => r.id === record.id);
-				if (recording) {
-					recording = { ...recording, ...record };
-				}
+				recordingController.recordings = recordingController.recordings.map((r) => (r.id === record.id ? { ...r, ...record } : r));
 			} else if (action === "delete") {
 				recordingController.recordings = recordingController.recordings.filter((r) => r.id !== record.id);
 			}
@@ -46,7 +43,7 @@
 	});
 
 	let hasSelection = $derived(selected.some(Boolean));
-	let allSelected = $derived(data.recordings.length > 0 && selected.length === data.recordings.length && selected.every(Boolean));
+	let allSelected = $derived(recordingController.recordings.length > 0 && selected.length === recordingController.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
 	function toggleSelectAll() {
@@ -58,7 +55,7 @@
 	}
 
 	async function archiveSelected() {
-		const toArchive = data.recordings.filter((_, i) => selected[i]);
+		const toArchive = recordingController.recordings.filter((_, i) => selected[i]);
 		if (toArchive.length === 0) return;
 
 		const batch = pb.createBatch();
@@ -91,7 +88,7 @@
 </Nav>
 
 <div class="w-2/3 mx-auto">
-	{#if data.recordings.length > 0}
+	{#if recordingController.recordings.length > 0}
 		<div class="flex items-center gap-2 mb-2 px-1 h-8">
 			<Label>
 				<Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} aria-label="Select all recordings" />
@@ -107,8 +104,10 @@
 		</div>
 	{/if}
 	<div class="w-full mx-auto flex flex-col gap-2">
-		{#each data.recordings as recording, i (recording.id)}
-			<RecordingCard data={recording} bind:selected={selected[i]}></RecordingCard>
+		{#each recordingController.recordings as recording, i (recording.id)}
+			{#if !recording.archived}
+				<RecordingCard data={recording} bind:selected={selected[i]}></RecordingCard>
+			{/if}
 		{/each}
 	</div>
 </div>
