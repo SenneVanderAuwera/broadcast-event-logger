@@ -22,8 +22,18 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "Start Check",
+			"type": "shell",
+			"command": "npm run check:watch",
+			"presentation": {
+				"panel": "new",
+				"reveal": "always"
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "Start Full Stack",
-			"dependsOn": ["Start Frontend", "Start Backend"],
+			"dependsOn": ["Start Frontend", "Start Backend", "Start Check"],
 			"dependsOrder": "parallel",
 			"problemMatcher": []
 		}
