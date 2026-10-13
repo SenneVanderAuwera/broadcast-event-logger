@@ -35,8 +35,10 @@ export class RecordingController {
 		if (this.#activeRecording) {
 			try {
 				await pb.collection(Collections.Recordings).update(this.#activeRecording.id, { stop: new Date().toISOString() });
-				invalidateAll();
-			} catch (err) {}
+			} catch (err) {
+				if (err instanceof Error) console.error(err);
+				throw new Error("Error stopping recording");
+			}
 		}
 	}
 
