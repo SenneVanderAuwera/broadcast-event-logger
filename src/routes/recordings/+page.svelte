@@ -11,7 +11,7 @@
 	import { Collections } from "$lib/pocketbase/types";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
-	import { onMount, tick } from "svelte";
+	import { onMount, tick, untrack } from "svelte";
 
 	let { data }: PageProps = $props();
 
@@ -37,8 +37,12 @@
 
 	$effect(() => {
 		recordingController.recordings = data.recordings;
-		if (selected.length !== data.recordings.length) {
-			selected = data.recordings.map(() => false);
+	});
+
+	$effect(() => {
+		const length = recordingController.recordings.length;
+		if (untrack(() => selected.length) !== length) {
+			selected = Array.from({ length }, () => false);
 		}
 	});
 
