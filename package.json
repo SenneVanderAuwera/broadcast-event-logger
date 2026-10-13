@@ -13,6 +13,7 @@
 		"typegen": "npx pocketbase-typegen --db ./pocketbase/pb_data/data.db -o ./src/lib/pocketbase/types.ts"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.31.0",
 		"@internationalized/date": "^3.12.1",
 		"@lucide/svelte": "^1.16.0",
 		"@sveltejs/adapter-node": "^5.5.4",
