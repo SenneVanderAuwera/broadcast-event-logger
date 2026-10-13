@@ -9,7 +9,7 @@
 	import { Separator } from "#lib/components/ui/separator/index.js";
 	import type { PageProps } from "./$types";
 
-	import { invalidateAll } from "$app/navigation";
+	import { refreshAll } from "$app/navigation";
 	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
 	import { pb } from "#lib/pocketbase/index.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
@@ -35,12 +35,12 @@
 
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: true });
-		invalidateAll();
+		refreshAll();
 	}
 
 	async function restoreRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: false });
-		invalidateAll();
+		refreshAll();
 	}
 
 	function exportRecordingEventsCsv() {
@@ -59,7 +59,7 @@
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.id, async () => {
-			await invalidateAll();
+			await refreshAll();
 		});
 
 		return () => {

@@ -1,4 +1,4 @@
-import { error, json } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
 import { ClientResponseError } from "pocketbase";
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	try {
 		const RecordingsResponse = await locals.pb.collection(Collections.Recordings).update(activeRecording?.id ?? "", { stop: recordingStopTime.toSQL() });
-		return json({ message: "Recording stopped", data: RecordingsResponse });
+		return Response.json({ message: "Recording stopped", data: RecordingsResponse });
 	} catch (err) {
 		error(500, "Failed to stop recording entry");
 	}
