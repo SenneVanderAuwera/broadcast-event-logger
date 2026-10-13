@@ -2,7 +2,7 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
 import { ClientResponseError } from "pocketbase";
-import { Collections } from "$lib/pocketbase/types";
+import { Collections } from "#lib/pocketbase/types.js";
 
 type RequestBodyParams = {
 	start: string;

@@ -1,4 +1,4 @@
-import type { RecordingsResponse } from "$lib/pocketbase/types";
+import type { RecordingsResponse } from "#lib/pocketbase/types.js";
 import { getContext, setContext } from "svelte";
 
 class RecordingState {

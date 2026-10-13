@@ -1,19 +1,19 @@
 <script lang="ts">
-	import EventCard from "$lib/components/events/EventCard.svelte";
-	import NewEventButtons from "$lib/components/events/NewEventButtons.svelte";
-	import RecordingEnd from "$lib/components/events/RecordingEnd.svelte";
-	import RecordingSummary from "$lib/components/events/RecordingSummary.svelte";
+	import EventCard from "#lib/components/events/EventCard.svelte";
+	import NewEventButtons from "#lib/components/events/NewEventButtons.svelte";
+	import RecordingEnd from "#lib/components/events/RecordingEnd.svelte";
+	import RecordingSummary from "#lib/components/events/RecordingSummary.svelte";
 
-	import Nav from "$lib/components/layout/nav.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Separator } from "$lib/components/ui/separator/index.js";
+	import Nav from "#lib/components/layout/nav.svelte";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Separator } from "#lib/components/ui/separator/index.js";
 	import type { PageProps } from "./$types";
 
 	import { invalidateAll } from "$app/navigation";
-	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
-	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingEventsResponse } from "$lib/pocketbase/types";
-	import { exportRecordingEventsCsv as createCsvDownload } from "$lib/utils/exportRecordingEventsCsv";
+	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
+	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import Download from "@lucide/svelte/icons/download";

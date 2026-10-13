@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { invalidateAll } from "$app/navigation";
-	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
-	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
+	import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.js";
 	import { DateTime } from "luxon";
 	import { toast } from "svelte-sonner";
 	import { slide } from "svelte/transition";

@@ -1,6 +1,6 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
 import { ClientResponseError } from "pocketbase";
 import { DateTime } from "luxon";
 

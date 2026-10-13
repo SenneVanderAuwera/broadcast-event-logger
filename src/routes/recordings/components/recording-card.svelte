@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { invalidate } from "$app/navigation";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-	import { pb } from "$lib/pocketbase";
-	import { Collections } from "$lib/pocketbase/types";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Checkbox } from "#lib/components/ui/checkbox/index.js";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections } from "#lib/pocketbase/types.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import type { PageData } from "../$types";

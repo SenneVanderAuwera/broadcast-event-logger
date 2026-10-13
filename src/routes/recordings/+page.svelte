@@ -2,13 +2,13 @@
 	import { goto, invalidate, invalidateAll } from "$app/navigation";
 	import RecordingCard from "./components/recording-card.svelte";
 
-	import Nav from "$lib/components/layout/nav.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
-	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
-	import { pb } from "$lib/pocketbase";
-	import { Collections } from "$lib/pocketbase/types";
+	import Nav from "#lib/components/layout/nav.svelte";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Checkbox } from "#lib/components/ui/checkbox/index.js";
+	import { Label } from "#lib/components/ui/label/index.js";
+	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections } from "#lib/pocketbase/types.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import type { PageProps } from "./$types";
 	import { onMount, tick } from "svelte";

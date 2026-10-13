@@ -1,6 +1,6 @@
-import { dev } from "$app/environment";
-import { pb, type EventType } from "$lib/pocketbase";
-import { Collections } from "$lib/pocketbase/types";
+import { dev } from "$app/env";
+import { pb, type EventType } from "#lib/pocketbase/index.js";
+import { Collections } from "#lib/pocketbase/types.js";
 import type { DateTime } from "luxon";
 
 export async function createNewEvent(recordingId: string, type: EventType, timestamp: DateTime, message?: string) {
