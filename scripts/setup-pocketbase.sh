@@ -2,8 +2,18 @@
 # Downloads the PocketBase binary matching this machine's architecture into ./pocketbase
 set -euo pipefail
 
-VERSION="${PB_VERSION:-0.30.0}"
-DEST="$(cd "$(dirname "$0")/.." && pwd)/pocketbase"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEST="$ROOT/pocketbase"
+
+# Version priority: PB_VERSION env var > PB_VERSION in .env
+VERSION="${PB_VERSION:-}"
+if [ -z "$VERSION" ] && [ -f "$ROOT/.env" ]; then
+  VERSION="$(grep -E '^PB_VERSION=' "$ROOT/.env" | tail -n1 | cut -d= -f2- | tr -d '"'"'"' \r')"
+fi
+if [ -z "$VERSION" ]; then
+  echo "PB_VERSION is not set (define it in .env or the environment)" >&2
+  exit 1
+fi
 
 case "$(uname -m)" in
   x86_64)  ARCH=amd64 ;;
