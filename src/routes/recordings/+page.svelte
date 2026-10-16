@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidate, invalidateAll } from "$app/navigation";
+	import { goto, invalidateAll } from "$app/navigation";
 	import RecordingCard from "./components/recording-card.svelte";
 
 	import Nav from "$lib/components/layout/nav.svelte";
@@ -10,8 +10,8 @@
 	import { pb } from "$lib/pocketbase";
 	import { Collections } from "$lib/pocketbase/types";
 	import Archive from "@lucide/svelte/icons/archive";
-	import type { PageProps } from "./$types";
 	import { onMount, tick } from "svelte";
+	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
 
