@@ -1,4 +1,4 @@
-import type { TypedPocketBase } from "$lib/pocketbase/types";
+import type { TypedPocketBase } from "#lib/pocketbase/types.js";
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { goto, invalidateAll } from "$app/navigation";
+	import { goto, refreshAll } from "$app/navigation";
 	import RecordingCard from "./components/recording-card.svelte";
 
-	import Nav from "$lib/components/layout/nav.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
-	import { getRecordingControllerCtx } from "$lib/context/recordingController.svelte";
-	import { pb } from "$lib/pocketbase";
-	import { Collections } from "$lib/pocketbase/types";
+	import Nav from "#lib/components/layout/nav.svelte";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { Checkbox } from "#lib/components/ui/checkbox/index.js";
+	import { Label } from "#lib/components/ui/label/index.js";
+	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections } from "#lib/pocketbase/types.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import { onMount, tick } from "svelte";
 	import type { PageProps } from "./$types";
@@ -22,7 +22,7 @@
 	onMount(() => {
 		pb.collection(Collections.Recordings).subscribe("*", async ({ action, record }) => {
 			if (action === "create") {
-				await invalidateAll();
+				await refreshAll();
 			} else if (action === "update") {
 				let recording = recordingController.recordings.find((r) => r.id === record.id);
 				if (recording) {
@@ -72,7 +72,7 @@
 		try {
 			const r = await recordingController.startRecording();
 			await tick();
-			goto(`/recordings/${r.id}`);
+			await goto(`/recordings/${r.id}`);
 		} catch (err) {
 			console.error(err);
 		}

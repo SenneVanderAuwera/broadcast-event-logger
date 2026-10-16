@@ -1,5 +1,5 @@
-import { type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
-import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
+import { type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
+import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.js";
 import { DateTime } from "luxon";
 
 function parseDateTime(value: string) {

@@ -1,7 +1,7 @@
-import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
 import { ClientResponseError } from "pocketbase";
 import type { PageLoad } from "./$types";
-import { pb } from "$lib/pocketbase";
+import { pb } from "#lib/pocketbase/index.js";
 
 export const load = (async ({ params, fetch }) => {
 	try {

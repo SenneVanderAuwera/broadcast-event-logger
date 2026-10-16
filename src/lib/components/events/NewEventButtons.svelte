@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { eventStyles } from "$lib/components/events/colors";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { createNewEvent } from "$lib/utils/events";
+	import { eventStyles } from "#lib/components/events/colors.js";
+	import { Button } from "#lib/components/ui/button/index.js";
+	import { createNewEvent } from "#lib/utils/events.js";
 	import Ban from "@lucide/svelte/icons/ban";
 	import Info from "@lucide/svelte/icons/info";
 	import TriangleAlert from "@lucide/svelte/icons/triangle-alert";

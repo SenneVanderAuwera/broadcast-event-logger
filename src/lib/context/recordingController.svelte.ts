@@ -1,7 +1,6 @@
-import { invalidate, invalidateAll } from "$app/navigation";
-import { pb } from "$lib/pocketbase";
-import type { RecordingEventsResponse, RecordingsResponse } from "$lib/pocketbase/types";
-import { Collections } from "$lib/pocketbase/types";
+import { pb } from "#lib/pocketbase/index.js";
+import type { RecordingEventsResponse, RecordingsResponse } from "#lib/pocketbase/types.js";
+import { Collections } from "#lib/pocketbase/types.js";
 import { createContext } from "svelte";
 
 export class RecordingController {

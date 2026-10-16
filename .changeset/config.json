@@ -5,11 +5,10 @@
   "fixed": [],
   "linked": [],
   "access": "restricted",
-  "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {
-    "tag": true,
-    "version": true
+    "version": true,
+    "tag": true
   }
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from "$app/navigation";
-	import HoverInput from "$lib/components/events/HoverInput.svelte";
-	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
+	import { refreshAll } from "$app/navigation";
+	import HoverInput from "#lib/components/events/HoverInput.svelte";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
 	import { DateTime } from "luxon";
 	import { toast } from "svelte-sonner";
 	import RecordingCard from "./RecordingCard.svelte";
@@ -15,7 +15,7 @@
 		} catch (err) {
 			toast.error("Failed to update recording title");
 			console.error(err);
-			invalidateAll();
+			refreshAll();
 		}
 	}
 </script>

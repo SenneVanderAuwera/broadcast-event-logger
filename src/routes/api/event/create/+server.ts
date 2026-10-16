@@ -1,7 +1,7 @@
-import { error, json } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
-import { Collections, type RecordingsResponse } from "$lib/pocketbase/types";
+import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
 import { ClientResponseError } from "pocketbase";
 
 type RequestBodyParams = {
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			message: requestBody.message,
 			timestamp: requestBody.timestamp,
 		});
-		return json({ message: "Event created", data: RecordingEventsResponse });
+		return Response.json({ message: "Event created", data: RecordingEventsResponse });
 	} catch (err) {
 		console.error("Error creating event:", err);
 		error(500, "Failed to create event entry");

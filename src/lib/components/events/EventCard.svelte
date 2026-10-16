@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from "$app/navigation";
-	import { pb } from "$lib/pocketbase";
-	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "$lib/pocketbase/types";
-	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
+	import { refreshAll } from "$app/navigation";
+	import { pb } from "#lib/pocketbase/index.js";
+	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
+	import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.js";
 	import { DateTime } from "luxon";
 	import { toast } from "svelte-sonner";
 	import { slide } from "svelte/transition";
@@ -35,7 +35,7 @@
 		} catch (err) {
 			toast.error("Failed to update event title");
 			console.error(err);
-			invalidateAll();
+			refreshAll();
 		}
 	}
 </script>
