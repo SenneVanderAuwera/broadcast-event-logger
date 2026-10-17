@@ -22,6 +22,14 @@ export default defineConfig(({ mode }) => {
 				adapter: adapter(),
 				paths: {
 					origin: env.ORIGIN
+				},
+				experimental: {
+					remoteFunctions: true
+				},
+				compilerOptions: {
+					experimental: {
+						async: true
+					}
 				}
 			})
 		]
