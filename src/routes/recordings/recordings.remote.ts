@@ -1,5 +1,5 @@
-import { Collections } from "$lib/pocketbase/types";
-import { pb } from "$lib/pocketbase";
+import { Collections } from "#lib/pocketbase/types.ts";
+import { pb } from "#lib/pocketbase/index.ts";
 import { query } from "$app/server";
 
 export const getRecordings = query(async () => {
