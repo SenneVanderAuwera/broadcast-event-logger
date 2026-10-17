@@ -11,13 +11,12 @@
 	import { Collections } from "#lib/pocketbase/types.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import { onMount, tick } from "svelte";
-	import type { PageProps } from "./$types";
-
-	let { data }: PageProps = $props();
+	import { getRecordings } from "./recordings.remote";
 
 	const recordingController = getRecordingControllerCtx();
+	recordingController.appendPocketbaseRecordings(await getRecordings());
 
-	let selected: boolean[] = $state((() => data.recordings.map(() => false))());
+	let selected: boolean[] = $state((() => recordingController.recordings.map(() => false))());
 
 	onMount(() => {
 		pb.collection(Collections.Recordings).subscribe("*", async ({ action, record }) => {
@@ -39,14 +38,13 @@
 	});
 
 	$effect(() => {
-		recordingController.recordings = data.recordings;
-		if (selected.length !== data.recordings.length) {
-			selected = data.recordings.map(() => false);
+		if (selected.length !== recordingController.recordings.length) {
+			selected = recordingController.recordings.map(() => false);
 		}
 	});
 
 	let hasSelection = $derived(selected.some(Boolean));
-	let allSelected = $derived(data.recordings.length > 0 && selected.length === data.recordings.length && selected.every(Boolean));
+	let allSelected = $derived(recordingController.recordings.length > 0 && selected.length === recordingController.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
 	function toggleSelectAll() {
@@ -58,7 +56,7 @@
 	}
 
 	async function archiveSelected() {
-		const toArchive = data.recordings.filter((_, i) => selected[i]);
+		const toArchive = recordingController.recordings.filter((_, i) => selected[i]);
 		if (toArchive.length === 0) return;
 
 		const batch = pb.createBatch();
@@ -91,7 +89,7 @@
 </Nav>
 
 <div class="w-2/3 mx-auto">
-	{#if data.recordings.length > 0}
+	{#if recordingController.recordings.length > 0}
 		<div class="flex items-center gap-2 mb-2 px-1 h-8">
 			<Label>
 				<Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} aria-label="Select all recordings" />
@@ -107,7 +105,7 @@
 		</div>
 	{/if}
 	<div class="w-full mx-auto flex flex-col gap-2">
-		{#each data.recordings as recording, i (recording.id)}
+		{#each recordingController.recordings as recording, i (recording.id)}
 			<RecordingCard data={recording} bind:selected={selected[i]}></RecordingCard>
 		{/each}
 	</div>
