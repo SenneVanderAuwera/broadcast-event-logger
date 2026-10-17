@@ -1,7 +1,8 @@
-import { pb } from "#lib/pocketbase/index.js";
 import type { RecordingEventsResponse, RecordingsResponse } from "#lib/pocketbase/types.js";
+
 import { Collections } from "#lib/pocketbase/types.js";
 import { createContext } from "svelte";
+import { pb } from "#lib/pocketbase/index.js";
 
 export class RecordingController {
 	#recordings: RecordingsResponse[] = $state([]);
@@ -13,6 +14,10 @@ export class RecordingController {
 	constructor() {
 		this.#recordings = [];
 		this.#recordingEvents = [];
+	}
+
+	appendPocketbaseRecordings(records: RecordingsResponse[]) {
+		this.#recordings = records;
 	}
 
 	getSelectedRecording(id: RecordingsResponse["id"]) {
