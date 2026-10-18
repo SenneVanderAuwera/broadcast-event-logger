@@ -1,9 +1,19 @@
-import { createRecording, getRecordings } from "#lib/remote/recordings.remote.ts";
+import { createRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
 
-import type { Collections } from "#lib/pocketbase/types.ts";
+import { Collections } from "#lib/pocketbase/types.ts";
 import { PocketbaseRecord } from "../pocketbase";
 
-export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> { }
+export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
+    archiveRecording() {
+        this.record.archived = true;
+        updateRecording(this);
+    }
+
+    restoreRecording() {
+        this.record.archived = false;
+        updateRecording(this);
+    }
+}
 
 export class RecordingsState {
     #query: ReturnType<typeof getRecordings>;
@@ -22,7 +32,7 @@ export class RecordingsState {
             throw new Error("A recording is already active");
         }
 
-        const newRecording = RecordingRecord.fromObject<Collections.Recordings>({ recording_name: "New Recording", start: new Date().toISOString() });
+        const newRecording = new RecordingRecord({ recording_name: "New Recording", start: new Date().toISOString() });
         createRecording(newRecording);
     }
 }
