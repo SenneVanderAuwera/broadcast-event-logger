@@ -2,6 +2,7 @@ import type { CollectionRecords, CollectionResponses, CreateBase, TypedPocketBas
 
 import { PUBLIC_POCKETBASE_URL } from "$app/env/public";
 import PocketBase from "pocketbase";
+import { untrack } from "svelte";
 
 export const pb: TypedPocketBase = new PocketBase(PUBLIC_POCKETBASE_URL);
 
@@ -10,6 +11,16 @@ export class PocketbaseRecord<T extends keyof CollectionResponses> {
 
     constructor(record: CollectionResponses[T]) {
         this.record = $state(record);
+
+        $effect(() => {
+            untrack(async () => {
+                try {
+                    await this.persist();
+                } catch (error) {
+                    console.error("Failed to persist record:", error);
+                }
+            })
+        })
 
         return this;
     }
@@ -22,7 +33,15 @@ export class PocketbaseRecord<T extends keyof CollectionResponses> {
         return new PocketbaseRecord<T>(record as CollectionResponses[T]);
     }
 
-    persist() {
-        return pb.collection(this.record.collectionName).create(this.record);
+    async persist() {
+        if (!this.record) {
+            throw new Error("Cannot persist an empty record");
+        }
+
+        if (!this.record.created) {
+            return pb.collection(this.record.collectionName).create(this.record);
+        }
+
+        return pb.collection(this.record.collectionName).update(this.record.id, this.record);
     }
 }
