@@ -2,7 +2,7 @@ import type { RecordingEventsResponse, RecordingsResponse } from "#lib/pocketbas
 
 import { Collections } from "#lib/pocketbase/types.js";
 import { createContext } from "svelte";
-import { pb } from "#lib/pocketbase/index.js";
+import { pb } from "#lib/pocketbase/index.svelte.js";
 
 export class RecordingController {
 	#recordings: RecordingsResponse[] = $state([]);

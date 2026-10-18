@@ -1,7 +1,7 @@
 import { createRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
 
 import { Collections } from "#lib/pocketbase/types.ts";
-import { PocketbaseRecord } from "../pocketbase";
+import { PocketbaseRecord } from "../pocketbase/index.svelte";
 
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     archiveRecording() {
@@ -19,7 +19,7 @@ export class RecordingsState {
     #query: ReturnType<typeof getRecordings>;
 
     recordings: RecordingRecord[];
-    active: RecordingRecord | null = null;
+    active: RecordingRecord | null;
 
     constructor() {
         this.#query = getRecordings();
@@ -33,6 +33,6 @@ export class RecordingsState {
         }
 
         const newRecording = new RecordingRecord({ recording_name: "New Recording", start: new Date().toISOString() });
-        createRecording(newRecording);
+        return createRecording(newRecording);
     }
 }
