@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { refreshAll } from "$app/navigation";
-	import { pb } from "#lib/pocketbase/index.js";
+	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
 	import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.js";
 	import { DateTime } from "luxon";

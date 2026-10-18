@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { refreshAll } from "$app/navigation";
 	import HoverInput from "#lib/components/events/HoverInput.svelte";
-	import { pb } from "#lib/pocketbase/index.js";
+	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
 	import { DateTime } from "luxon";
 	import { toast } from "svelte-sonner";
