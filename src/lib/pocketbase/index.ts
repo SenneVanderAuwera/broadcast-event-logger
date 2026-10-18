@@ -13,6 +13,8 @@ export class PocketbaseRecord<T extends keyof CollectionResponses> {
         this.record = $state(record);
 
         $effect(() => {
+            $state.snapshot(this.record);
+
             untrack(async () => {
                 try {
                     await this.persist();
