@@ -14,17 +14,17 @@
 
 	const recordingsState = new RecordingsState();
 
-	let selected: boolean[] = $state([]);
+	let selected: boolean[] = $derived(recordingsState.recordings.map((r) => r.selected));
 	let hasSelection = $derived(selected.some(Boolean));
 	let allSelected = $derived(recordingsState.recordings.length > 0 && selected.length === recordingsState.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
+	$inspect(selected);
+
 	const toggleSelectAll = () => {
-		if (allSelected) {
-			selected = selected.map(() => false);
-		} else {
-			selected = selected.map(() => true);
-		}
+		recordingsState.recordings.forEach((recording, i) => {
+			recording.selected = !allSelected;
+		});
 	};
 
 	const archiveSelected = async () => {
@@ -78,7 +78,7 @@
 	{/if}
 	<div class="w-full mx-auto flex flex-col gap-2">
 		{#each recordingsState.recordings as recording, i (recording.record.id)}
-			<RecordingCard data={recording} bind:selected={selected[i]}></RecordingCard>
+			<RecordingCard data={recording}></RecordingCard>
 		{/each}
 	</div>
 </div>

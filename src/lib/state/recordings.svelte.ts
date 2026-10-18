@@ -4,6 +4,8 @@ import { Collections } from "#lib/pocketbase/types.ts";
 import { PocketbaseRecord } from "../pocketbase/index.svelte";
 
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
+    selected = $state(false);
+
     archiveRecording() {
         this.record.archived = true;
         updateRecording(this);

@@ -9,7 +9,7 @@
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import { DateTime } from "luxon";
 
-	let { data, selected = $bindable(false) }: { data: RecordingRecord; selected: boolean } = $props();
+	let { data }: { data: RecordingRecord } = $props();
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(data.record.id, { archived: true });
 		invalidate("recordings:non-archived");
@@ -24,7 +24,7 @@
 <div class="flex items-center gap-2 group relative">
 	{#if !data.record.archived}
 		<div class="flex items-center">
-			<Checkbox bind:checked={selected} aria-label="Select recording" />
+			<Checkbox bind:checked={data.selected} aria-label="Select recording" />
 		</div>
 	{/if}
 

@@ -17,7 +17,7 @@
 <div class="w-2/3 mx-auto">
 	<div class="w-full mx-auto flex flex-col gap-2">
 		{#each recordingState.recordings as recording, i}
-			<RecordingCard data={recording} selected></RecordingCard>
+			<RecordingCard data={recording}></RecordingCard>
 		{/each}
 	</div>
 </div>
