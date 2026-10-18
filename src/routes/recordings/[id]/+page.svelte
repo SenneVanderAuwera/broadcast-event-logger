@@ -11,7 +11,7 @@
 
 	import { refreshAll } from "$app/navigation";
 	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
-	import { pb } from "#lib/pocketbase/index.js";
+	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import Archive from "@lucide/svelte/icons/archive";

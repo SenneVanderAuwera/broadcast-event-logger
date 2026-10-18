@@ -1,7 +1,7 @@
 import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.js";
 import { ClientResponseError } from "pocketbase";
 import type { PageLoad } from "./$types";
-import { pb } from "#lib/pocketbase/index.js";
+import { pb } from "#lib/pocketbase/index.svelte.ts";
 
 export const load = (async ({ params, fetch }) => {
 	try {

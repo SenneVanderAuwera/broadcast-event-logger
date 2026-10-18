@@ -3,18 +3,9 @@
 	import RecordingCard from "../components/recording-card.svelte";
 
 	import { Button } from "#lib/components/ui/button/index.js";
+	import { RecordingsState } from "#lib/state/recordings.svelte.ts";
 
-	import type { PageProps } from "./$types";
-
-	let { data }: PageProps = $props();
-
-	let selected: boolean[] = $state((() => data.recordings.map(() => false))());
-
-	$effect(() => {
-		if (selected.length !== data.recordings.length) {
-			selected = data.recordings.map(() => false);
-		}
-	});
+	const recordingState = new RecordingsState();
 </script>
 
 <Nav>
@@ -25,8 +16,8 @@
 
 <div class="w-2/3 mx-auto">
 	<div class="w-full mx-auto flex flex-col gap-2">
-		{#each data.recordings as recording, i}
-			<RecordingCard data={recording} archived bind:selected={selected[i]}></RecordingCard>
+		{#each recordingState.recordings as recording, i}
+			<RecordingCard data={recording} selected></RecordingCard>
 		{/each}
 	</div>
 </div>
