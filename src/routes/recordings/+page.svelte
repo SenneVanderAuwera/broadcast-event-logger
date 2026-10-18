@@ -19,8 +19,6 @@
 	let allSelected = $derived(recordingsState.recordings.length > 0 && selected.length === recordingsState.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
-	$inspect(selected);
-
 	const toggleSelectAll = () => {
 		recordingsState.recordings.forEach((recording, i) => {
 			recording.selected = !allSelected;
