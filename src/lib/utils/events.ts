@@ -1,9 +1,10 @@
-import { dev } from "$app/env";
-import { pb, type EventType } from "#lib/pocketbase/index.js";
-import { Collections } from "#lib/pocketbase/types.js";
-import type { DateTime } from "luxon";
+import { Collections, RecordingEventsTypeOptions } from "#lib/pocketbase/types.js";
 
-export async function createNewEvent(recordingId: string, type: EventType, timestamp: DateTime, message?: string) {
+import type { DateTime } from "luxon";
+import { dev } from "$app/env";
+import { pb } from "#lib/pocketbase/index.svelte.js";
+
+export async function createNewEvent(recordingId: string, type: RecordingEventsTypeOptions, timestamp: DateTime, message?: string) {
 	try {
 		const RecordingEventsResponse = await pb.collection(Collections.RecordingEvents).create({
 			recording: recordingId,
