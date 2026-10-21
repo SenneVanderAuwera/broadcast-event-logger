@@ -6,12 +6,12 @@ import { PocketbaseRecord } from "../pocketbase/index.svelte";
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
 
-    archiveRecording() {
+    archive() {
         this.record.archived = true;
         updateRecording($state.snapshot(this.record));
     }
 
-    restoreRecording() {
+    restore() {
         this.record.archived = false;
         updateRecording($state.snapshot(this.record));
     }

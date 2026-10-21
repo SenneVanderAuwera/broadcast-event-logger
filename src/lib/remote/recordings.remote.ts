@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.ts";
 import { pb } from "../pocketbase/index.svelte";
 
-export const getRecording = query(v.string(), async (id) => {
+export const getRecording = query(v.string(), async (id: string) => {
     const record = await pb.collection(Collections.Recordings).getOne(id);
     return record;
 });

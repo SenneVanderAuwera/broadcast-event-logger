@@ -24,7 +24,7 @@
 
 	const recordingController = getRecordingControllerCtx();
 
-	const recording = $derived(new RecordingRecord(await getRecording(page.params.id)));
+	const recording = $derived(new RecordingRecord(await getRecording(page.params.id ?? "")));
 
 	const exportRecordingEventsCsv = async () => {
 		if (!createCsvDownload(recording.record, recordingController.recordingEvents)) {
@@ -68,11 +68,11 @@
 			Export CSV
 		</Button>
 		{#if recording.record.archived}
-			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archiveRecording()}><ArchiveRestore /> Restore</Button>
+			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
 		{:else if recordingController.state.active}
 			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{:else}
-			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archiveRecording()}><Archive /> Archive</Button>
+			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
 		{/if}
 		<Button variant="outline" href="/recordings">Back</Button>
 	{/snippet}
