@@ -1,7 +1,6 @@
 import { command, query } from "$app/server";
 
-import { Collections } from "#lib/pocketbase/types.ts";
-import type { RecordingRecord } from "#lib/state/recordings.svelte.ts";
+import { Collections, type RecordingsRecord, type RecordingsResponse } from "#lib/pocketbase/types.ts";
 import { pb } from "../pocketbase/index.svelte";
 
 export const getRecordings = query(async () => {
@@ -10,15 +9,15 @@ export const getRecordings = query(async () => {
 });
 
 export const createRecording = command("unchecked",
-    async (data: RecordingRecord) => {
-        const record = await pb.collection(Collections.Recordings).create(data.record);
+    async (data: RecordingsResponse) => {
+        const record = await pb.collection(Collections.Recordings).create(data);
         return record;
     }
 );
 
 export const updateRecording = command("unchecked",
-    async (data: RecordingRecord) => {
-        const record = await pb.collection(Collections.Recordings).update(data.record.id, data.record);
+    async (data: RecordingsResponse) => {
+        const record = await pb.collection(Collections.Recordings).update(data.id, data);
         return record;
     }
 );

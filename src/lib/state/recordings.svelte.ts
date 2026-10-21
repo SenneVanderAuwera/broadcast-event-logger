@@ -8,12 +8,12 @@ export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
 
     archiveRecording() {
         this.record.archived = true;
-        updateRecording(this);
+        updateRecording($state.snapshot(this.record));
     }
 
     restoreRecording() {
         this.record.archived = false;
-        updateRecording(this);
+        updateRecording($state.snapshot(this.record));
     }
 }
 
@@ -35,6 +35,6 @@ export class RecordingsState {
         }
 
         const newRecording = new RecordingRecord({ recording_name: "New Recording", start: new Date().toISOString() });
-        return createRecording(newRecording);
+        return createRecording(newRecording.record);
     }
 }
