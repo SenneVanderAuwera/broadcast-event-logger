@@ -1,4 +1,5 @@
 import { createRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
+import { getRecordingEvents } from "#lib/remote/recording-events.remote.ts";
 
 import { Collections } from "#lib/pocketbase/types.ts";
 import { PocketbaseRecord } from "../pocketbase/index.svelte";
@@ -26,16 +27,18 @@ export class RecordingEventRecord extends PocketbaseRecord<Collections.Recording
 }
 
 export class RecordingsState {
-    #query: ReturnType<typeof getRecordings>;
+    recordingsQuery: ReturnType<typeof getRecordings>;
+    recordingEventsQuery: ReturnType<typeof getRecordingEvents>;
 
     recordings: RecordingRecord[];
     recordingEvents: RecordingEventRecord[];
     active: RecordingRecord | null;
 
     constructor() {
-        this.#query = getRecordings();
-        this.recordings = $derived(this.#query.current?.map(record => new RecordingRecord(record)) ?? []);
-        this.recordingEvents = $derived([]);
+        this.recordingsQuery = getRecordings();
+        this.recordingEventsQuery = getRecordingEvents();
+        this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
+        this.recordingEvents = $derived(this.recordingEventsQuery.current?.map(record => new RecordingEventRecord(record)) ?? []);
         this.active = $derived(this.recordings.find(recording => !recording.record.stop) ?? null);
     }
 
