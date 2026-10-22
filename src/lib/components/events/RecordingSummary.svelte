@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { refreshAll } from "$app/navigation";
 	import HoverInput from "#lib/components/events/HoverInput.svelte";
-	import { pb } from "#lib/pocketbase/index.svelte.js";
-	import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.js";
+	import { RecordingRecord } from "#lib/state/recordings.svelte.ts";
+	import { refreshAll } from "$app/navigation";
 	import { DateTime } from "luxon";
 	import { toast } from "svelte-sonner";
 	import RecordingCard from "./RecordingCard.svelte";
+	import { updateRecording } from "#lib/remote/recordings.remote.ts";
 
-	let { recording }: { recording: RecordingsResponse } = $props();
+	let { recording }: { recording: RecordingRecord } = $props();
 
 	async function handleRecordingNameChange() {
 		try {
-			await pb.collection(Collections.Recordings).update(recording.id, { ...recording });
+			await updateRecording($state.snapshot(recording.record));
 		} catch (err) {
 			toast.error("Failed to update recording title");
 			console.error(err);
@@ -22,12 +22,12 @@
 
 <RecordingCard>
 	{#snippet left()}
-		<HoverInput className="bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0" bind:value={recording.recording_name} onchange={handleRecordingNameChange} disabled={recording.archived} />
+		<HoverInput className="bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0" bind:value={recording.record.recording_name} onchange={handleRecordingNameChange} disabled={recording.record.archived} />
 	{/snippet}
 	{#snippet center()}
-		<span class="text-xl font-bold">{recording.filename}</span>
+		<span class="text-xl font-bold">{recording.record.filename}</span>
 	{/snippet}
 	{#snippet right()}
-		<span>{DateTime.fromSQL(recording.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}</span>
+		<span>{DateTime.fromSQL(recording.record.start).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}</span>
 	{/snippet}
 </RecordingCard>

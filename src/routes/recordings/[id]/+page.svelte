@@ -3,7 +3,6 @@
 	import NewEventButtons from "#lib/components/events/NewEventButtons.svelte";
 	import RecordingEnd from "#lib/components/events/RecordingEnd.svelte";
 	import RecordingSummary from "#lib/components/events/RecordingSummary.svelte";
-	import { RecordingEventRecord } from "#lib/state/recordings.svelte.ts";
 
 	import Nav from "#lib/components/layout/nav.svelte";
 	import { Button } from "#lib/components/ui/button/index.js";
@@ -14,7 +13,6 @@
 	import { getRecording } from "#lib/remote/recordings.remote.ts";
 	import { RecordingRecord, RecordingsState } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
-	import { refreshAll } from "$app/navigation";
 	import { page } from "$app/state";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
@@ -22,7 +20,7 @@
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 
-	const recordingState = new RecordingsState();
+	const recordingsState = new RecordingsState();
 
 	const recording = $derived(new RecordingRecord(await getRecording(page.params.id ?? "")));
 
@@ -30,7 +28,7 @@
 		if (
 			!createCsvDownload(
 				recording.record,
-				recordingState.recordingEvents.map((e) => e.record),
+				recordingsState.recordingEvents.map((e) => e.record),
 			)
 		) {
 			toast.error("Failed to export CSV");
@@ -41,11 +39,11 @@
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			recordingState.recordingEventsQuery.refresh();
+			recordingsState.recordingEventsQuery.refresh();
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id, async () => {
-			recordingState.recordingsQuery.refresh();
+			recordingsState.recordingsQuery.refresh();
 		});
 
 		return () => {
@@ -72,8 +70,8 @@
 		</Button>
 		{#if recording.record.archived}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
-		{:else if recordingState.active}
-			<Button onclick={() => recordingState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+		{:else if recordingsState.active}
+			<Button onclick={() => recordingsState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{:else}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
 		{/if}
@@ -83,19 +81,19 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingSummary recording={recording.record} />
+		<RecordingSummary {recording} />
 
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingState.recordingEvents as event, i (event.record.id)}
+			{#each recordingsState.recordingEvents as event, i (event.record.id)}
 				<EventCard {recording} {event} />
 			{/each}
 		</div>
 
 		{@render separator()}
 
-		{#if recordingState.active}
+		{#if recordingsState.active}
 			<NewEventButtons recordingId={recording.record.id} />
 		{:else}
 			<RecordingEnd recording={recording.record} />
