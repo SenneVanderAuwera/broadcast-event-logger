@@ -3,6 +3,7 @@ import { createRecording, getRecording, getRecordings, updateRecording } from "#
 
 import { Collections } from "#lib/pocketbase/types.ts";
 import { PocketbaseRecord } from "../pocketbase/index.svelte";
+import { DateTime } from "luxon";
 
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
@@ -19,7 +20,7 @@ export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     }
 
     stop() {
-        this.record.stop = new Date().toISOString();
+        this.record.stop = DateTime.now().toSQL();
         this.update();
     }
 
@@ -70,7 +71,7 @@ export class RecordingsState {
             throw new Error("A recording is already active");
         }
 
-        const newRecording = new RecordingRecord({ recording_name: "New Recording", start: new Date().toISOString() });
+        const newRecording = new RecordingRecord({ recording_name: "New Recording", start: DateTime.now().toSQL() });
         return createRecording(newRecording.record);
     }
 

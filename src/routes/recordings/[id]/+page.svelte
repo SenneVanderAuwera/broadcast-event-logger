@@ -101,10 +101,10 @@
 
 			{@render separator()}
 
-			{#if recording?.isActive()}
+			{#if recording.isActive()}
 				<NewEventButtons recordingId={recording?.record?.id} />
 			{:else}
-				<RecordingEnd recording={recording?.record} />
+				<RecordingEnd {recording} />
 			{/if}
 		</div>
 	</div>
