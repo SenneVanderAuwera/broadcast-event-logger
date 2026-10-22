@@ -39,8 +39,8 @@ export class RecordingsState {
     recordings: RecordingRecord[];
     active: RecordingRecord | null;
 
-    constructor() {
-        this.recordingsQuery = getRecordings();
+    constructor(archived = false) {
+        this.recordingsQuery = getRecordings({ archived });
         this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
         this.active = $derived(this.recordings.find(recording => !recording.record.stop) ?? null);
     }
