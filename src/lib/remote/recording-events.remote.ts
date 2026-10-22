@@ -9,8 +9,10 @@ export const getRecordingEvent = query(v.string(), async (id: string) => {
     return record;
 });
 
-export const getRecordingEvents = query(async () => {
-    const records = await pb.collection(Collections.RecordingEvents).getFullList();
+export const getRecordingEvents = query(v.string(),async (recordingId: string) => {
+    const records = await pb.collection(Collections.RecordingEvents).getFullList(200, {
+        filter: `recording = "${recordingId}"`
+    });
     return records;
 });
 
