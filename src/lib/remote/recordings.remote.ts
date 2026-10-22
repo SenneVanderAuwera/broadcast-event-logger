@@ -9,8 +9,8 @@ export const getRecording = query(v.string(), async (id: string) => {
     return record;
 });
 
-export const getRecordings = query(async () => {
-    const records = await pb.collection(Collections.Recordings).getFullList();
+export const getRecordings = query(v.optionalAsync(v.object({archived: v.optional(v.boolean())})), async ({archived = false} = {}) => {
+    const records = await pb.collection(Collections.Recordings).getFullList(200, { filter: `archived=${archived}` });
     return records;
 });
 
