@@ -6,6 +6,11 @@ import { PocketbaseRecord } from "../pocketbase/index.svelte";
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
 
+    stop() {
+        this.record.stop = new Date().toISOString();
+        updateRecording($state.snapshot(this.record));
+    }
+
     archive() {
         this.record.archived = true;
         updateRecording($state.snapshot(this.record));
@@ -41,5 +46,13 @@ export class RecordingsState {
 
         const newRecording = new RecordingRecord({ recording_name: "New Recording", start: new Date().toISOString() });
         return createRecording(newRecording.record);
+    }
+
+    stopActiveRecording() {
+        if (!this.active) {
+            throw new Error("No active recording to stop");
+        }
+
+        this.active.stop();
     }
 }
