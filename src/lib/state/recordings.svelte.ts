@@ -1,5 +1,5 @@
-import { createRecording, getRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
 import { getRecordingEvents } from "#lib/remote/recording-events.remote.ts";
+import { createRecording, getRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
 
 import { Collections } from "#lib/pocketbase/types.ts";
 import { PocketbaseRecord } from "../pocketbase/index.svelte";
@@ -28,9 +28,16 @@ export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
         this.record.archived = false;
         this.update();
     }
+
+    toJSON() {
+        return $state.snapshot(this.record);
+    }
 }
 
 export class RecordingEventRecord extends PocketbaseRecord<Collections.RecordingEvents> {
+    toJSON() {
+        return $state.snapshot(this.record);
+    }
 }
 
 export class RecordingsState {
@@ -46,18 +53,12 @@ export class RecordingsState {
     }
 
     async getRecordingById(id: string) {
-        const recording = this.recordings.find(recording => recording.record.id === id);
-
-        if (!recording) {
-            try {
-                const recordingRecord = new RecordingRecord(await getRecording(id));
-                return recordingRecord;
-            } catch (err) {
-                throw err;
-            }
+        try {
+            const recordingRecord = new RecordingRecord(await getRecording(id));
+            return recordingRecord;
+        } catch (err) {
+            throw err;
         }
-
-        return recording;
     }
 
     startRecording() {
