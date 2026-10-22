@@ -6,7 +6,7 @@ import { PocketbaseRecord } from "../pocketbase/index.svelte";
 
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
-    recordingEventsQuery = $derived(getRecordingEvents(this.record.id));
+    recordingEventsQuery = getRecordingEvents(this.record.id);
 
     recordingEvents = $derived(this.recordingEventsQuery.current?.map(record => new RecordingEventRecord(record)) ?? []);
 
@@ -47,10 +47,6 @@ export class RecordingsState {
 
     getRecordingById(id: string) {
         const recording = this.recordings.find(recording => recording.record.id === id);
-
-        if (!recording) {
-            throw new Error(`Recording with id ${id} not found`);
-        }
 
         return recording;
     }

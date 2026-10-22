@@ -10,7 +10,7 @@
 
 	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
-	import { RecordingsState } from "#lib/state/recordings.svelte.ts";
+	import { RecordingRecord, RecordingsState } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import { page } from "$app/state";
 	import Archive from "@lucide/svelte/icons/archive";
@@ -24,6 +24,11 @@
 	const recording = $derived(recordingsState.getRecordingById(page.params.id ?? ""));
 
 	const exportRecordingEventsCsv = async () => {
+		if (!recording?.record) {
+			toast.error("No recording found");
+			return;
+		}
+
 		if (
 			!createCsvDownload(
 				recording.record,
@@ -36,12 +41,14 @@
 		toast.success("CSV exported");
 	};
 
-	onMount(() => {
+	$effect(() => {
+		if (!recording) return;
+
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			recording.recordingEventsQuery.refresh();
+			recording?.recordingEventsQuery.refresh();
 		});
 
-		pb.collection(Collections.Recordings).subscribe(recording.record.id, async () => {
+		pb.collection(Collections.Recordings).subscribe(recording?.record.id ?? "", async () => {
 			recordingsState.recordingsQuery.refresh();
 		});
 
@@ -61,41 +68,45 @@
 	</div>
 {/snippet}
 
-<Nav>
-	{#snippet right()}
-		<Button variant="outline" class="hover:cursor-pointer" onclick={exportRecordingEventsCsv} disabled={!recording.record.id}>
-			<Download />
-			Export CSV
-		</Button>
-		{#if recording.record.archived}
-			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
-		{:else if recordingsState.active}
-			<Button onclick={() => recordingsState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
-		{:else}
-			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
-		{/if}
-		<Button variant="outline" href="/recordings">Back</Button>
-	{/snippet}
-</Nav>
+{#if !recording}
+	<p class="text-center text-red-500">No recording found</p>
+{:else}
+	<Nav>
+		{#snippet right()}
+			<Button variant="outline" class="hover:cursor-pointer" onclick={exportRecordingEventsCsv} disabled={!recording?.record?.id}>
+				<Download />
+				Export CSV
+			</Button>
+			{#if recording?.record?.archived}
+				<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
+			{:else if recordingsState.active}
+				<Button onclick={() => recordingsState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+			{:else}
+				<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
+			{/if}
+			<Button variant="outline" href="/recordings">Back</Button>
+		{/snippet}
+	</Nav>
 
-<div class="w-2/3 mx-auto print:w-full">
-	<div class="w-full flex flex-col gap-2">
-		<RecordingSummary {recording} />
+	<div class="w-2/3 mx-auto print:w-full">
+		<div class="w-full flex flex-col gap-2">
+			<RecordingSummary {recording} />
 
-		{@render separator()}
+			{@render separator()}
 
-		<div class="flex flex-col gap-1">
-			{#each recording.recordingEvents as event, i (event.record.id)}
-				<EventCard {recording} {event} />
-			{/each}
+			<div class="flex flex-col gap-1">
+				{#each recording.recordingEvents as event, i (event.record.id)}
+					<EventCard {recording} {event} />
+				{/each}
+			</div>
+
+			{@render separator()}
+
+			{#if recordingsState.active}
+				<NewEventButtons recordingId={recording?.record?.id} />
+			{:else}
+				<RecordingEnd recording={recording?.record} />
+			{/if}
 		</div>
-
-		{@render separator()}
-
-		{#if recordingsState.active}
-			<NewEventButtons recordingId={recording.record.id} />
-		{:else}
-			<RecordingEnd recording={recording.record} />
-		{/if}
 	</div>
-</div>
+{/if}
