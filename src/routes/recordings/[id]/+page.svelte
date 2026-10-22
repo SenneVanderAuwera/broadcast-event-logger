@@ -28,7 +28,7 @@
 		if (
 			!createCsvDownload(
 				recording.record,
-				recordingsState.recordingEvents.map((e) => e.record),
+				recording.recordingEvents.map((e) => e.record),
 			)
 		) {
 			toast.error("Failed to export CSV");
@@ -39,7 +39,7 @@
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			recordingsState.recordingEventsQuery.refresh();
+			recording.recordingEventsQuery.refresh();
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id, async () => {
@@ -86,7 +86,7 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingsState.recordingEvents as event, i (event.record.id)}
+			{#each recording.recordingEvents as event, i (event.record.id)}
 				<EventCard {recording} {event} />
 			{/each}
 		</div>
