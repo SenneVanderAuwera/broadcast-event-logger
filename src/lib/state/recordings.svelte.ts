@@ -17,15 +17,20 @@ export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     }
 }
 
+export class RecordingEventRecord extends PocketbaseRecord<Collections.RecordingEvents> {
+}
+
 export class RecordingsState {
     #query: ReturnType<typeof getRecordings>;
 
     recordings: RecordingRecord[];
+    recordingEvents: RecordingEventRecord[];
     active: RecordingRecord | null;
 
     constructor() {
         this.#query = getRecordings();
         this.recordings = $derived(this.#query.current?.map(record => new RecordingRecord(record)) ?? []);
+        this.recordingEvents = $derived([]);
         this.active = $derived(this.recordings.find(recording => !recording.record.stop) ?? null);
     }
 
