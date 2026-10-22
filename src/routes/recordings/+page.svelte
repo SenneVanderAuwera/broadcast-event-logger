@@ -34,6 +34,7 @@
 			batch.collection(Collections.Recordings).update(recording.record.id, { archived: true });
 		}
 		await batch.send();
+		recordingsState.recordingsQuery.refresh();
 	};
 
 	const startNewRecording = async () => {
