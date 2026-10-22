@@ -5,7 +5,7 @@
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { RecordingsState } from "#lib/state/recordings.svelte.ts";
 
-	const recordingState = new RecordingsState();
+	const recordingState = new RecordingsState({ archived: true });
 </script>
 
 <Nav>
