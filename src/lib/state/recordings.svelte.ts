@@ -7,19 +7,23 @@ import { PocketbaseRecord } from "../pocketbase/index.svelte";
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
 
+    update() {
+        updateRecording($state.snapshot(this.record));
+    }
+
     stop() {
         this.record.stop = new Date().toISOString();
-        updateRecording($state.snapshot(this.record));
+        this.update();
     }
 
     archive() {
         this.record.archived = true;
-        updateRecording($state.snapshot(this.record));
+        this.update();
     }
 
     restore() {
         this.record.archived = false;
-        updateRecording($state.snapshot(this.record));
+        this.update();
     }
 }
 
