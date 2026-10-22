@@ -10,6 +10,10 @@ export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
 
     recordingEvents = $derived(this.recordingEventsQuery.current?.map(record => new RecordingEventRecord(record)) ?? []);
 
+    isActive() {
+        return this.record.stop === "";
+    }
+
     update() {
         updateRecording($state.snapshot(this.record));
     }
@@ -49,7 +53,7 @@ export class RecordingsState {
     constructor({ archived = false } = {}) {
         this.recordingsQuery = getRecordings({ archived });
         this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
-        this.active = $derived(this.recordings.find(recording => !recording.record.stop) ?? null);
+        this.active = $derived(this.recordings.find(recording => recording.record.stop === "") ?? null);
     }
 
     async getRecordingById(id: string) {

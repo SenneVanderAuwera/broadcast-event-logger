@@ -47,7 +47,7 @@
 			recording?.recordingEventsQuery.refresh();
 		});
 
-		pb.collection(Collections.Recordings).subscribe(recording?.record.id ?? "", async () => {
+		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async () => {
 			recordingsState.recordingsQuery.refresh();
 		});
 
@@ -78,8 +78,8 @@
 			</Button>
 			{#if recording?.record?.archived}
 				<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
-			{:else if recordingsState.active}
-				<Button onclick={() => recordingsState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+			{:else if recording?.isActive()}
+				<Button onclick={() => recording.stop()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 			{:else}
 				<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
 			{/if}
@@ -101,7 +101,7 @@
 
 			{@render separator()}
 
-			{#if recordingsState.active}
+			{#if recording?.isActive()}
 				<NewEventButtons recordingId={recording?.record?.id} />
 			{:else}
 				<RecordingEnd recording={recording?.record} />
