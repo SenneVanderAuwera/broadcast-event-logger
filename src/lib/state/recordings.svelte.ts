@@ -8,7 +8,6 @@ import { DateTime } from "luxon";
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
     recordingEventsQuery = $derived(getRecordingEvents(this.record.id));
-
     recordingEvents = $derived(this.recordingEventsQuery.current?.map(record => new RecordingEventRecord(record)) ?? []);
 
     isActive() {
@@ -48,6 +47,8 @@ export class RecordingEventRecord extends PocketbaseRecord<Collections.Recording
 export class RecordingsState {
     recordingsQuery: ReturnType<typeof getRecordings>;
 
+    recordingQueryById?: ReturnType<typeof getRecording>;
+
     recordings: RecordingRecord[];
     active: RecordingRecord | null;
 
@@ -55,11 +56,14 @@ export class RecordingsState {
         this.recordingsQuery = getRecordings({ archived });
         this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
         this.active = $derived(this.recordings.find(recording => recording.record.stop === "") ?? null);
+        this.recordingQueryById = $state(undefined);
     }
 
     async getRecordingById(id: string) {
         try {
-            const recordingRecord = new RecordingRecord(await getRecording(id));
+            this.recordingQueryById = getRecording(id);
+            console.log(await this.recordingQueryById);
+            const recordingRecord = new RecordingRecord(await this.recordingQueryById);
             return recordingRecord;
         } catch (err) {
             throw err;

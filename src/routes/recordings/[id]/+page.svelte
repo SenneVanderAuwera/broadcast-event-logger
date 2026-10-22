@@ -20,7 +20,7 @@
 
 	const recordingsState = new RecordingsState();
 
-	const recording = $derived(await recordingsState.getRecordingById(page.params.id ?? ""));
+	let recording = $state(await recordingsState.getRecordingById(page.params.id ?? ""));
 
 	const exportRecordingEventsCsv = async () => {
 		if (!recording?.record) {
@@ -47,8 +47,9 @@
 			recording?.recordingEventsQuery.refresh();
 		});
 
-		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async () => {
-			recordingsState.recordingsQuery.refresh();
+		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async ({ record }) => {
+			console.log("Recording update");
+			recording.record = record;
 		});
 
 		return () => {
