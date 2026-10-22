@@ -56,13 +56,11 @@ export class RecordingsState {
         this.recordingsQuery = getRecordings({ archived });
         this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
         this.active = $derived(this.recordings.find(recording => recording.record.stop === "") ?? null);
-        this.recordingQueryById = $state(undefined);
     }
 
     async getRecordingById(id: string) {
         try {
             this.recordingQueryById = getRecording(id);
-            console.log(await this.recordingQueryById);
             const recordingRecord = new RecordingRecord(await this.recordingQueryById);
             return recordingRecord;
         } catch (err) {
