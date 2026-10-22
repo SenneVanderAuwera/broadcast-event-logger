@@ -8,7 +8,7 @@
 	import { Label } from "#lib/components/ui/label/index.js";
 	import Archive from "@lucide/svelte/icons/archive";
 	import { goto } from "$app/navigation";
-	import { tick } from "svelte";
+	import { onMount, tick } from "svelte";
 	import { Collections } from "#lib/pocketbase/types.ts";
 	import { pb } from "#lib/pocketbase/index.svelte.ts";
 
@@ -18,6 +18,16 @@
 	let hasSelection = $derived(selected.some(Boolean));
 	let allSelected = $derived(recordingsState.recordings.length > 0 && selected.length === recordingsState.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
+
+	onMount(() => {
+		pb.collection(Collections.Recordings).subscribe("*", ({ action, record }) => {
+			recordingsState.recordingsQuery.refresh();
+		});
+
+		return () => {
+			pb.collection(Collections.Recordings).unsubscribe();
+		};
+	});
 
 	const toggleSelectAll = () => {
 		recordingsState.recordings.forEach((recording, i) => {
