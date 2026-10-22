@@ -19,9 +19,10 @@
 	let allSelected = $derived(recordingsState.recordings.length > 0 && selected.length === recordingsState.recordings.length && selected.every(Boolean));
 	let someSelected = $derived(hasSelection && !allSelected);
 
-	onMount(() => {
+	$effect(() => {
 		pb.collection(Collections.Recordings).subscribe("*", ({ action, record }) => {
 			recordingsState.recordingsQuery.refresh();
+			console.log($state.snapshot(recordingsState.recordings));
 		});
 
 		return () => {
