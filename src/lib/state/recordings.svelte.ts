@@ -46,7 +46,13 @@ export class RecordingsState {
     }
 
     getRecordingById(id: string) {
-        return this.recordings.find(recording => recording.record.id === id) ?? null;
+        const recording = this.recordings.find(recording => recording.record.id === id);
+
+        if (!recording) {
+            throw new Error(`Recording with id ${id} not found`);
+        }
+
+        return recording;
     }
 
     startRecording() {
