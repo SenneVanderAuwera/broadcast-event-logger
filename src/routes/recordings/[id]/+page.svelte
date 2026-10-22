@@ -3,16 +3,16 @@
 	import NewEventButtons from "#lib/components/events/NewEventButtons.svelte";
 	import RecordingEnd from "#lib/components/events/RecordingEnd.svelte";
 	import RecordingSummary from "#lib/components/events/RecordingSummary.svelte";
+	import { RecordingEventRecord } from "#lib/state/recordings.svelte.ts";
 
 	import Nav from "#lib/components/layout/nav.svelte";
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { Separator } from "#lib/components/ui/separator/index.js";
 
-	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.js";
 	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
 	import { getRecording } from "#lib/remote/recordings.remote.ts";
-	import { RecordingRecord } from "#lib/state/recordings.svelte.ts";
+	import { RecordingRecord, RecordingsState } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import { refreshAll } from "$app/navigation";
 	import { page } from "$app/state";
@@ -22,12 +22,17 @@
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
 
-	const recordingController = getRecordingControllerCtx();
+	const recordingState = new RecordingsState();
 
 	const recording = $derived(new RecordingRecord(await getRecording(page.params.id ?? "")));
 
 	const exportRecordingEventsCsv = async () => {
-		if (!createCsvDownload(recording.record, recordingController.recordingEvents)) {
+		if (
+			!createCsvDownload(
+				recording.record,
+				recordingState.recordingEvents.map((e) => e.record),
+			)
+		) {
 			toast.error("Failed to export CSV");
 			return;
 		}
@@ -36,13 +41,11 @@
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			if (action === "create") recordingController.recordingEvents.push(record);
-			if (action === "delete") recordingController.recordingEvents = recordingController.recordingEvents.filter((e) => e.id !== record.id);
-			if (action === "update") recordingController.recordingEvents = recordingController.recordingEvents.map((e) => (e.id === record.id ? record : e));
+			recordingState.recordingEventsQuery.refresh();
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id, async () => {
-			await refreshAll();
+			recordingState.recordingsQuery.refresh();
 		});
 
 		return () => {
@@ -69,8 +72,8 @@
 		</Button>
 		{#if recording.record.archived}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.restore()}><ArchiveRestore /> Restore</Button>
-		{:else if recordingController.state.active}
-			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+		{:else if recordingState.active}
+			<Button onclick={() => recordingState.stopActiveRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{:else}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={() => recording.archive()}><Archive /> Archive</Button>
 		{/if}
@@ -85,14 +88,14 @@
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingController.recordingEvents as event, i (event.id)}
-				<EventCard recording={recording.record} bind:event={recordingController.recordingEvents[i]} />
+			{#each recordingState.recordingEvents as event, i (event.record.id)}
+				<EventCard {recording} {event} />
 			{/each}
 		</div>
 
 		{@render separator()}
 
-		{#if recordingController.state.active}
+		{#if recordingState.active}
 			<NewEventButtons recordingId={recording.record.id} />
 		{:else}
 			<RecordingEnd recording={recording.record} />
