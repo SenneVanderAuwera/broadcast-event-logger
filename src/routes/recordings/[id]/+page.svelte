@@ -22,7 +22,7 @@
 	const recordingsState = new RecordingsState();
 
 	const recordingQuery = getRecording(page.params.id ?? "");
-	let recording = $derived(new RecordingRecord(await recordingQuery));
+	const recording = $derived(new RecordingRecord(await recordingQuery));
 
 	const exportRecordingEventsCsv = async () => {
 		if (!recording?.record) {
