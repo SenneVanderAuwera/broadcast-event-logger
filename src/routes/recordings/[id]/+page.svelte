@@ -10,7 +10,8 @@
 
 	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
-	import { RecordingsState } from "#lib/state/recordings.svelte.ts";
+	import { getRecording } from "#lib/remote/recordings.remote.ts";
+	import { RecordingRecord, RecordingsState } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import { page } from "$app/state";
 	import Archive from "@lucide/svelte/icons/archive";
@@ -20,7 +21,8 @@
 
 	const recordingsState = new RecordingsState();
 
-	let recording = $derived(await recordingsState.getRecordingById(page.params.id ?? ""));
+	const recordingQuery = getRecording(page.params.id ?? "");
+	let recording = $derived(new RecordingRecord(await recordingQuery));
 
 	const exportRecordingEventsCsv = async () => {
 		if (!recording?.record) {
