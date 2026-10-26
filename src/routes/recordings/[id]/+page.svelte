@@ -50,8 +50,7 @@
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async ({ record }) => {
-			recordingsState.recordingQueryById?.refresh();
-			recordingsState.recordingsQuery.refresh();
+			recordingQuery.refresh();
 		});
 
 		return () => {
