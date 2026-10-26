@@ -6,13 +6,15 @@
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { Checkbox } from "#lib/components/ui/checkbox/index.js";
 	import { Label } from "#lib/components/ui/label/index.js";
-	import Archive from "@lucide/svelte/icons/archive";
-	import { goto } from "$app/navigation";
-	import { onMount, tick } from "svelte";
-	import { Collections } from "#lib/pocketbase/types.ts";
 	import { pb } from "#lib/pocketbase/index.svelte.ts";
+	import { Collections } from "#lib/pocketbase/types.ts";
+	import { getRecordings } from "#lib/remote/recordings.remote.ts";
+	import { goto } from "$app/navigation";
+	import Archive from "@lucide/svelte/icons/archive";
+	import { tick } from "svelte";
 
-	const recordingsState = new RecordingsState();
+	const recordingsQuery = getRecordings();
+	const recordingsState = new RecordingsState({ recordings: await recordingsQuery });
 
 	let selected: boolean[] = $derived(recordingsState.recordings.map((r) => r.selected));
 	let hasSelection = $derived(selected.some(Boolean));
@@ -21,7 +23,7 @@
 
 	$effect(() => {
 		pb.collection(Collections.Recordings).subscribe("*", ({ action, record }) => {
-			recordingsState.recordingsQuery.refresh();
+			recordingsQuery.refresh();
 			console.log($state.snapshot(recordingsState.recordings));
 		});
 
@@ -45,7 +47,7 @@
 			batch.collection(Collections.Recordings).update(recording.record.id, { archived: true });
 		}
 		await batch.send();
-		recordingsState.recordingsQuery.refresh();
+		recordingsQuery.refresh();
 	};
 
 	const startNewRecording = async () => {

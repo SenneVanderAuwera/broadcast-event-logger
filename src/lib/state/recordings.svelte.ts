@@ -1,9 +1,9 @@
-import { getRecordingEvents } from "#lib/remote/recording-events.remote.ts";
 import { createRecording, getRecording, getRecordings, updateRecording } from "#lib/remote/recordings.remote.ts";
 
-import { Collections } from "#lib/pocketbase/types.ts";
-import { PocketbaseRecord } from "../pocketbase/index.svelte";
+import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.ts";
 import { DateTime } from "luxon";
+import { PocketbaseRecord } from "../pocketbase/index.svelte";
+import { getRecordingEvents } from "#lib/remote/recording-events.remote.ts";
 
 export class RecordingRecord extends PocketbaseRecord<Collections.Recordings> {
     selected = $state(false);
@@ -45,27 +45,12 @@ export class RecordingEventRecord extends PocketbaseRecord<Collections.Recording
 }
 
 export class RecordingsState {
-    recordingsQuery: ReturnType<typeof getRecordings>;
-
-    recordingQueryById?: ReturnType<typeof getRecording>;
-
     recordings: RecordingRecord[];
     active: RecordingRecord | null;
 
-    constructor({ archived = false } = {}) {
-        this.recordingsQuery = getRecordings({ archived });
-        this.recordings = $derived(this.recordingsQuery.current?.map(record => new RecordingRecord(record)) ?? []);
+    constructor({ archived = false, recordings }: { archived?: boolean, recordings: RecordingsResponse[] } = {recordings: []}) {
+        this.recordings = $derived(recordings.map(recording => new RecordingRecord(recording)) ?? []);
         this.active = $derived(this.recordings.find(recording => recording.record.stop === "") ?? null);
-    }
-
-    async getRecordingById(id: string) {
-        try {
-            this.recordingQueryById = getRecording(id);
-            const recordingRecord = new RecordingRecord(await this.recordingQueryById);
-            return recordingRecord;
-        } catch (err) {
-            throw err;
-        }
     }
 
     startRecording() {
