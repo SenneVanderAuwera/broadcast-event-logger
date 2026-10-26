@@ -43,10 +43,8 @@
 	};
 
 	$effect(() => {
-		if (!recording) return;
-
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			recording?.recordingEventsQuery.refresh();
+			recording.recordingEventsQuery.refresh();
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async ({ record }) => {
