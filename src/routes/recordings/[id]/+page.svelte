@@ -11,15 +11,13 @@
 	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
 	import { getRecording } from "#lib/remote/recordings.remote.ts";
-	import { RecordingRecord, RecordingsState } from "#lib/state/recordings.svelte.ts";
+	import { RecordingRecord } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import { page } from "$app/state";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import Download from "@lucide/svelte/icons/download";
 	import { toast } from "svelte-sonner";
-
-	const recordingsState = new RecordingsState();
 
 	const recordingQuery = getRecording(page.params.id ?? "");
 	const recording = $derived(new RecordingRecord(await recordingQuery));
