@@ -4,8 +4,10 @@
 
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { RecordingsState } from "#lib/state/recordings.svelte.ts";
+	import { getRecordings } from "#lib/remote/recordings.remote.ts";
 
-	const recordingState = new RecordingsState({ archived: true });
+	const recordingsQuery = getRecordings({ archived: true });
+	const recordingState = new RecordingsState({ recordings: await recordingsQuery });
 </script>
 
 <Nav>
