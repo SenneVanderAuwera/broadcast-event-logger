@@ -48,7 +48,7 @@ export class RecordingsState {
     recordings: RecordingRecord[];
     active: RecordingRecord | null;
 
-    constructor({ archived = false, recordings }: { archived?: boolean, recordings: RecordingsResponse[] } = {recordings: []}) {
+    constructor({ recordings }: { recordings: RecordingsResponse[] } = { recordings: [] }) {
         this.recordings = $derived(recordings.map(recording => new RecordingRecord(recording)) ?? []);
         this.active = $derived(this.recordings.find(recording => recording.record.stop === "") ?? null);
     }
