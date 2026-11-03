@@ -10,7 +10,7 @@
 
 	import { pb } from "#lib/pocketbase/index.svelte.js";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.js";
-	import { getRecording } from "#lib/remote/recordings.remote.ts";
+	import { getRecording, getRecordings } from "#lib/remote/recordings.remote.ts";
 	import { RecordingRecord } from "#lib/state/recordings.svelte.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.js";
 	import { page } from "$app/state";
@@ -47,6 +47,7 @@
 
 		pb.collection(Collections.Recordings).subscribe(recording.record.id ?? "", async ({ record }) => {
 			recordingQuery.refresh();
+			getRecordings().refresh();
 		});
 
 		return () => {

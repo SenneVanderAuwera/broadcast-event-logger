@@ -14,7 +14,7 @@
 	import { tick } from "svelte";
 
 	const recordingsQuery = getRecordings();
-	const recordingsState = new RecordingsState({ recordings: await recordingsQuery });
+	const recordingsState = $derived(new RecordingsState({ recordings: await recordingsQuery }));
 
 	let selected: boolean[] = $derived(recordingsState.recordings.map((r) => r.selected));
 	let hasSelection = $derived(selected.some(Boolean));
@@ -24,7 +24,6 @@
 	$effect(() => {
 		pb.collection(Collections.Recordings).subscribe("*", ({ action, record }) => {
 			recordingsQuery.refresh();
-			console.log($state.snapshot(recordingsState.recordings));
 		});
 
 		return () => {
@@ -68,7 +67,7 @@
 		{:else}
 			<Button variant="outline" class="border-destructive text-destructive hover:bg-destructive hover:text-white hover:cursor-pointer" onclick={startNewRecording}>Start new recording</Button>
 		{/if}
-		<Button href="/recordings/archive" variant="outline"><Archive /></Button>
+		<Button href="/recordings/archive" variant="outline" data-sveltekit-reload={true}><Archive /></Button>
 	{/snippet}
 </Nav>
 
