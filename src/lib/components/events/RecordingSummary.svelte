@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidateAll } from "$app/navigation";
+	import { refreshAll } from "$app/navigation";
 	import HoverInput from "#lib/components/events/HoverInput.svelte";
 	import { pb } from "#lib/pocketbase/index.ts";
 	import { Collections, type RecordingsResponse } from "#lib/pocketbase/types.ts";
@@ -15,7 +15,7 @@
 		} catch (err) {
 			toast.error("Failed to update recording title");
 			console.error(err);
-			invalidateAll();
+			await refreshAll();
 		}
 	}
 </script>

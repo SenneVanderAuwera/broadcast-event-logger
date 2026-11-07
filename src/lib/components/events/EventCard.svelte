@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidateAll } from "$app/navigation";
+	import { refreshAll } from "$app/navigation";
 	import { pb } from "#lib/pocketbase/index.ts";
 	import { Collections, type RecordingEventsResponse, type RecordingsResponse } from "#lib/pocketbase/types.ts";
 	import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.ts";
@@ -35,7 +35,7 @@
 		} catch (err) {
 			toast.error("Failed to update event title");
 			console.error(err);
-			invalidateAll();
+			await refreshAll();
 		}
 	}
 </script>
