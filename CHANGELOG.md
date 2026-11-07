@@ -1,5 +1,17 @@
 # broadcast-event-logger
 
+## 0.3.0
+
+### Minor Changes
+
+- 3efecab: Add github action for automatically releasing versions
+- 707055e: Clean up recording view page
+
+### Patch Changes
+
+- f85e002: Update dependencies and update to Sveltekit 3
+- 8a25a2b: Fix realtime behaviour
+
 ## 0.2.0
 
 ### Minor Changes
