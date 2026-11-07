@@ -8,7 +8,7 @@ services:
     # environment:
       # ENCRYPTION: $(openssl rand -hex 16) # optional (Ensure this is a 32-character long encryption key https://pocketbase.io/docs/going-to-production/#enable-settings-encryption) 
     volumes:
-      - ./pocketbase/pb_data:/pb_data
+      - pb_data:/pb_data
       - ./pocketbase/pb_migrations:/pb_migrations # optional
       - ./pocketbase/pb_public:/pb_public # optional
       - ./pocketbase/pb_hooks:/pb_hooks # optional
@@ -34,3 +34,5 @@ services:
 networks:
   broadcast-graphics-network:
     external: true
+volumes:
+  pb_data:
