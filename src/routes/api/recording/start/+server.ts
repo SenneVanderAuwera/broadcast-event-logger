@@ -2,29 +2,35 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { DateTime } from "luxon";
 import { ClientResponseError } from "pocketbase";
-import { Collections } from "$lib/pocketbase/types";
+import { Collections } from "#lib/pocketbase/types.ts";
 
 type RequestBodyParams = {
-	start: string;
+  start: string;
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const requestBody: RequestBodyParams = await request.json();
+  const requestBody: RequestBodyParams = await request.json();
 
-	let recordingStartTimeFromRequest = DateTime.fromISO(requestBody.start);
-	let recordingStartTime = DateTime.now();
+  let recordingStartTimeFromRequest = DateTime.fromISO(requestBody.start);
+  let recordingStartTime = DateTime.now();
 
-	if (recordingStartTimeFromRequest.isValid) recordingStartTime = recordingStartTimeFromRequest;
+  if (recordingStartTimeFromRequest.isValid)
+    recordingStartTime = recordingStartTimeFromRequest;
 
-	try {
-		const RecordingsResponse = await locals.pb.collection(Collections.Recordings).create({ start: recordingStartTime.toSQL() });
-		return json({ message: "New recording started", data: RecordingsResponse });
-	} catch (err) {
-		if (err instanceof ClientResponseError) {
-			if (err.data.data.stop.code === "validation_not_unique") {
-				error(400, "Please stop the active recording before starting a new one");
-			}
-		}
-		error(500, "Failed to create recording entry");
-	}
+  try {
+    const RecordingsResponse = await locals.pb
+      .collection(Collections.Recordings)
+      .create({ start: recordingStartTime.toSQL() });
+    return json({ message: "New recording started", data: RecordingsResponse });
+  } catch (err) {
+    if (err instanceof ClientResponseError) {
+      if (err.data.data.stop.code === "validation_not_unique") {
+        error(
+          400,
+          "Please stop the active recording before starting a new one"
+        );
+      }
+    }
+    error(500, "Failed to create recording entry");
+  }
 };

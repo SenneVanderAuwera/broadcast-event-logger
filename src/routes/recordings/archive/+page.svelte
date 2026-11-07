@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Nav from "$lib/components/layout/nav.svelte";
+	import Nav from "#lib/components/layout/nav.svelte";
 	import RecordingCard from "../components/recording-card.svelte";
 
-	import { Button } from "$lib/components/ui/button/index.js";
+	import { Button } from "#lib/components/ui/button/index.js";
 
 	import type { PageProps } from "./$types";
 
