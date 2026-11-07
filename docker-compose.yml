@@ -7,10 +7,8 @@ services:
       - ENCRYPTION # optional
     # environment:
       # ENCRYPTION: $(openssl rand -hex 16) # optional (Ensure this is a 32-character long encryption key https://pocketbase.io/docs/going-to-production/#enable-settings-encryption) 
-    ports:
-      - "8091:8090"
     volumes:
-      - ./pocketbase/pb_data:/pb_data
+      - pb_data:/pb_data
       - ./pocketbase/pb_migrations:/pb_migrations # optional
       - ./pocketbase/pb_public:/pb_public # optional
       - ./pocketbase/pb_hooks:/pb_hooks # optional
@@ -19,6 +17,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - broadcast-graphics-network
   web:
     restart: unless-stopped
     environment:
@@ -27,7 +27,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8001:3000"
     depends_on:
       - pocketbase
+    networks:
+      - broadcast-graphics-network
+networks:
+  broadcast-graphics-network:
+    external: true
+volumes:
+  pb_data:
