@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { RecordingsResponse } from "$lib/pocketbase/types";
-	import { getRelativeDuration } from "$lib/utils/calculateRelativeDuration";
+	import type { RecordingsResponse } from "#lib/pocketbase/types.ts";
+	import { getRelativeDuration } from "#lib/utils/calculateRelativeDuration.ts";
 	import { DateTime } from "luxon";
 	import RecordingCard from "./RecordingCard.svelte";
 
