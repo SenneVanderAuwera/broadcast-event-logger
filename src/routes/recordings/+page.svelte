@@ -49,7 +49,7 @@
 		try {
 			const result = await batch.send();
 
-			recordingsQuery.set(result.map((r) => r.body));
+			recordingsQuery.refresh();
 		} catch (err) {
 			console.error(err);
 		}
