@@ -5,16 +5,17 @@
 import type PocketBase from 'pocketbase'
 import type { RecordService } from 'pocketbase'
 
-export enum Collections {
-	Authorigins = "_authOrigins",
-	Externalauths = "_externalAuths",
-	Mfas = "_mfas",
-	Otps = "_otps",
-	Superusers = "_superusers",
-	RecordingEvents = "recording_events",
-	Recordings = "recordings",
-	Users = "users",
-}
+export const Collections = {
+	Authorigins: "_authOrigins",
+	Externalauths: "_externalAuths",
+	Mfas: "_mfas",
+	Otps: "_otps",
+	Superusers: "_superusers",
+	RecordingEvents: "recording_events",
+	Recordings: "recordings",
+	Users: "users",
+} as const
+export type Collections = typeof Collections[keyof typeof Collections]
 
 // Alias types for improved usability
 export type IsoDateString = string
@@ -94,12 +95,14 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export enum RecordingEventsTypeOptions {
-	"info" = "info",
-	"warning" = "warning",
-	"error" = "error",
-}
+export const RecordingEventsTypeOptions = {
+	"info": "info",
+	"warning": "warning",
+	"error": "error",
+} as const
+export type RecordingEventsTypeOptions = typeof RecordingEventsTypeOptions[keyof typeof RecordingEventsTypeOptions]
 export type RecordingEventsRecord = {
+	color?: string
 	created: IsoAutoDateString
 	id: string
 	message?: string
