@@ -45,8 +45,14 @@
 		for (const recording of toArchive) {
 			batch.collection(Collections.Recordings).update(recording.record.id, { archived: true });
 		}
-		await batch.send();
-		recordingsQuery.refresh();
+
+		try {
+			const result = await batch.send();
+
+			recordingsQuery.set(result.map((r) => r.body));
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const startNewRecording = async () => {
