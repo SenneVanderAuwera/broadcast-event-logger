@@ -9,6 +9,7 @@ type RequestBodyParams = {
   timestamp?: string;
   message?: string;
   type?: "info" | "warning" | "error";
+  color?: string;
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -47,6 +48,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         title: requestBody.title,
         type: requestBody.type,
         message: requestBody.message,
+        color: requestBody.color,
         timestamp: requestBody.timestamp,
       });
     return Response.json({ message: "Event created", data: RecordingEventsResponse });
