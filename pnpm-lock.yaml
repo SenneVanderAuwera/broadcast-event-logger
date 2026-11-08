@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       pocketbase:
-        specifier: ^0.26.9
-        version: 0.26.9
+        specifier: ^0.28.2
+        version: 0.28.2
     devDependencies:
       '@changesets/cli':
         specifier: ^2.31.0
@@ -1014,8 +1014,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pocketbase@0.26.9:
-    resolution: {integrity: sha512-Tiv1/hNuUzRdvT0d8hF03dfzuefQ1WdSRp1A1q3wzFC/WYhQcbU/Qlaubl/3ZDo6xvFXBS8JAgBS/L+ms7nkVQ==}
+  pocketbase@0.28.2:
+    resolution: {integrity: sha512-5lS4g7iDZi90LxLai8kyUK4r5u1GkEAoZ3yuzTEFX97FyDQAoEmXWbTqf+pYA1hz5e/icBQu1MCUjM/9V8mitg==}
 
   postcss@8.5.32:
     resolution: {integrity: sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g==}
@@ -2081,7 +2081,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pocketbase@0.26.9: {}
+  pocketbase@0.28.2: {}
 
   postcss@8.5.32:
     dependencies:

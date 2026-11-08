@@ -7,31 +7,29 @@
 	import Nav from "#lib/components/layout/nav.svelte";
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { Separator } from "#lib/components/ui/separator/index.js";
-	import type { PageProps } from "./$types";
 
-	import { refreshAll } from "$app/navigation";
-	import { getRecordingControllerCtx } from "#lib/context/recordingController.svelte.ts";
 	import { pb } from "#lib/pocketbase/index.ts";
 	import { Collections, type RecordingEventsResponse } from "#lib/pocketbase/types.ts";
 	import { exportRecordingEventsCsv as createCsvDownload } from "#lib/utils/exportRecordingEventsCsv.ts";
+	import { refreshAll } from "$app/navigation";
 	import Archive from "@lucide/svelte/icons/archive";
 	import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
 	import Download from "@lucide/svelte/icons/download";
 	import { onMount } from "svelte";
 	import { toast } from "svelte-sonner";
+	import type { PageProps } from "./$types";
 
-	let { data }: PageProps = $props();
+	const { data }: PageProps = $props();
 
-	const recordingController = getRecordingControllerCtx();
+	let recording = $state({} as PageProps["data"]["recording"]);
+	let events = $state([] as PageProps["data"]["events"]);
 
-	// svelte-ignore state_referenced_locally
-	let recording = $state(data.recording);
+	const isRecordingActive = $derived(recording.stop === null);
 
-	$effect(() => {
-		recording = data.recording;
-		recordingController.recordings = [data.recording];
-		recordingController.recordingEvents = data.events;
-	});
+	async function stopRecording() {
+		await pb.collection(Collections.Recordings).update(recording.id, { stop: new Date().toISOString() });
+		await refreshAll();
+	}
 
 	async function archiveRecording() {
 		await pb.collection(Collections.Recordings).update(recording.id, { archived: true });
@@ -44,7 +42,7 @@
 	}
 
 	function exportRecordingEventsCsv() {
-		if (!createCsvDownload(recording, recordingController.recordingEvents)) {
+		if (!createCsvDownload(recording, events)) {
 			toast.error("Failed to export CSV");
 			return;
 		}
@@ -52,10 +50,12 @@
 	}
 
 	onMount(() => {
+		recording = data.recording;
+
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
-			if (action === "create") recordingController.recordingEvents.push(record);
-			if (action === "delete") recordingController.recordingEvents = recordingController.recordingEvents.filter((e) => e.id !== record.id);
-			if (action === "update") recordingController.recordingEvents = recordingController.recordingEvents.map((e) => (e.id === record.id ? record : e));
+			if (action === "create") events.push(record);
+			if (action === "delete") events = events.filter((e) => e.id !== record.id);
+			if (action === "update") events = events.map((e) => (e.id === record.id ? record : e));
 		});
 
 		pb.collection(Collections.Recordings).subscribe(recording.id, async () => {
@@ -86,8 +86,8 @@
 		</Button>
 		{#if recording.archived}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={restoreRecording}><ArchiveRestore /> Restore</Button>
-		{:else if recordingController.state.active}
-			<Button onclick={() => recordingController.stopRecording()} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
+		{:else if isRecordingActive}
+			<Button onclick={stopRecording} variant="outline" class="border-destructive bg-destructive text-white animate-pulse hover:text-destructive hover:cursor-pointer">Stop recording</Button>
 		{:else}
 			<Button variant="outline" class="hover:cursor-pointer" onclick={archiveRecording}><Archive /> Archive</Button>
 		{/if}
@@ -97,19 +97,19 @@
 
 <div class="w-2/3 mx-auto print:w-full">
 	<div class="w-full flex flex-col gap-2">
-		<RecordingSummary {recording} />
+		<RecordingSummary bind:recording />
 
 		{@render separator()}
 
 		<div class="flex flex-col gap-1">
-			{#each recordingController.recordingEvents as event, i (event.id)}
-				<EventCard recording={data.recording} bind:event={recordingController.recordingEvents[i]} />
+			{#each events as event, i (event.id)}
+				<EventCard {recording} bind:event={events[i]} />
 			{/each}
 		</div>
 
 		{@render separator()}
 
-		{#if recordingController.state.active}
+		{#if isRecordingActive}
 			<NewEventButtons recordingId={recording.id} />
 		{:else}
 			<RecordingEnd {recording} />

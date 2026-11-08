@@ -7,7 +7,7 @@
 	import { toast } from "svelte-sonner";
 	import RecordingCard from "./RecordingCard.svelte";
 
-	let { recording }: { recording: RecordingsResponse } = $props();
+	let { recording = $bindable() }: { recording: RecordingsResponse } = $props();
 
 	async function handleRecordingNameChange() {
 		try {

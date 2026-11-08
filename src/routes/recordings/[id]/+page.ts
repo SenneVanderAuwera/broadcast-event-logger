@@ -12,6 +12,7 @@ export const load = (async ({ params, fetch }) => {
     const recordingResponse = pb
       .collection(Collections.Recordings)
       .getOne(params.id, { fetch });
+
     const eventsResponse = pb
       .collection(Collections.RecordingEvents)
       .getFullList({
