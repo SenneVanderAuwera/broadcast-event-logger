@@ -9,6 +9,7 @@
 	import { eventStyles } from "./colors";
 	import HoverInput from "./HoverInput.svelte";
 	import HoverTextarea from "./HoverTextarea.svelte";
+	import { parseColor } from "#lib/utils/color-parser.ts";
 
 	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
@@ -16,7 +17,8 @@
 
 	const type: "info" | "warning" | "error" = $derived(event.type as "info" | "warning" | "error");
 
-	let color = $derived(eventStyles["default"][type]);
+	let color = $derived(parseColor(event.color) ?? eventStyles["default"][type]);
+
 	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp)));
 
 	let isHovered = $state(false);
@@ -46,13 +48,13 @@
 
 	<div class={["rounded-lg px-3 py-3 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color]}>
 		<header class="flex justify-between mb-0 items-center">
-			<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-white/20! w-44 focus-visible:ring-0"} bind:value={event.title} onchange={handleInputChange} {disabled} />
+			<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-black/20! w-44 focus-visible:ring-0"} bind:value={event.title} onchange={handleInputChange} {disabled} />
 			<span class=""> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 		</header>
 
 		{#if event.message !== "" || (!disabled && isHovered)}
 			<p transition:slide={{ duration: 250 }} class="text-sm whitespace-pre-wrap">
-				<HoverTextarea className={"bg-transparent! border-0 text-lg! px-2 hover:bg-white/20! focus-visible:ring-0 min-h-10 h-10 resize-none"} bind:value={event.message} onchange={handleInputChange} {disabled} />
+				<HoverTextarea className={"bg-transparent! border-0 text-lg! px-2 hover:bg-black/20! focus-visible:ring-0 min-h-10 h-10 resize-none"} bind:value={event.message} onchange={handleInputChange} {disabled} />
 			</p>
 		{/if}
 	</div>
