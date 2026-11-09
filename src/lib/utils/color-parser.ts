@@ -29,5 +29,6 @@ function getHexFromColor(color: string): string | undefined {
 
 export function parseColor(color: string): string | undefined {
     if (!color) return undefined;
+    if (/^#[0-9a-f]{6}$/i.test(color)) return color;
     return getHexFromColor(color);
 }

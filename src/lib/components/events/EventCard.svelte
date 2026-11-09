@@ -18,6 +18,7 @@
 	const type: "info" | "warning" | "error" = $derived(event.type as "info" | "warning" | "error");
 
 	let color = $derived(parseColor(event.color));
+	const defaultColors = { info: "#1447e6", warning: "#d08700", error: "#c10007" };
 
 	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp)));
 
@@ -35,7 +36,7 @@
 		try {
 			await pb.collection(Collections.RecordingEvents).update(event.id, { ...event });
 		} catch (err) {
-			toast.error("Failed to update event title");
+			toast.error("Failed to update event");
 			console.error(err);
 			await refreshAll();
 		}
@@ -49,7 +50,12 @@
 	<div class={["rounded-lg px-3 py-3 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color ? "bg-(--event-color)" : eventStyles["default"][type]]} style:--event-color={color}>
 		<header class="flex justify-between mb-0 items-center">
 			<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-black/20! w-44 focus-visible:ring-0"} bind:value={event.title} onchange={handleInputChange} {disabled} />
-			<span class=""> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+			<div class="flex items-center gap-2">
+				{#if !disabled}
+					<input type="color" aria-label="Event color" class="size-8 cursor-pointer print:hidden" bind:value={() => color ?? defaultColors[type], (value) => (event.color = value)} onchange={handleInputChange} />
+				{/if}
+				<span> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+			</div>
 		</header>
 
 		{#if event.message !== "" || (!disabled && isHovered)}
