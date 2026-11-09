@@ -10,7 +10,8 @@ function parseDateTime(value: string) {
   return sqlDateTime.isValid ? sqlDateTime : DateTime.fromISO(value);
 }
 
-function getEventColor(type: RecordingEventsResponse["type"]) {
+function getEventColor(type: RecordingEventsResponse["type"], color?: string) {
+  if(color) return color;
   if (type === "warning") return "Yellow";
   if (type === "error") return "Red";
   return "Blue";
@@ -37,7 +38,7 @@ export function exportRecordingEventsCsv(
       : "";
 
     return [
-      getEventColor(event.type),
+      getEventColor(event.type, event.color),
       event.title,
       event.message,
       relativeTimestamp,
