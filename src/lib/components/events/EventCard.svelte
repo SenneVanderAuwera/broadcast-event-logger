@@ -11,6 +11,7 @@
 	import HoverTextarea from "./HoverTextarea.svelte";
 	import { parseColor } from "#lib/utils/color-parser.ts";
 	import { Button } from "#lib/components/ui/button/index.js";
+	import { Input } from "#lib/components/ui/input/index.js";
 
 	let { event = $bindable(), recording }: { event: RecordingEventsResponse; recording: RecordingsResponse } = $props();
 
@@ -73,11 +74,13 @@
 	<div class="basis-48 text-center">{duration.toFormat("hh:mm:ss")}</div>
 
 	<div class={["rounded-lg px-3 py-3 space-y-3 flex-1 print:p-1 print:bg-transparent print:text-foreground", color ? "bg-(--event-color)" : eventStyles["default"][type]]} style:--event-color={color}>
-		<header class="flex justify-between mb-0 items-center">
-			<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-black/20! w-44 focus-visible:ring-0"} bind:value={event.title} onchange={handleInputChange} {disabled} />
+		<header class="flex justify-between mb-0 items-center gap-2">
+			<div class="flex items-center flex-3 gap-2">
+				<Input type="color" aria-label="Event color" class="size-8 cursor-pointer print:hidden p-1" bind:value={() => color ?? defaultColors[type], (value) => (event.color = value)} onchange={handleInputChange} />
+				<HoverInput className={"bg-transparent! border-0 text-lg! font-bold px-1 hover:bg-black/20! w-44 focus-visible:ring-0 flex-1"} bind:value={event.title} onchange={handleInputChange} {disabled} />
+			</div>
 			<div class="flex items-center gap-2">
 				{#if !disabled}
-					<input type="color" aria-label="Event color" class="size-8 cursor-pointer print:hidden" bind:value={() => color ?? defaultColors[type], (value) => (event.color = value)} onchange={handleInputChange} />
 					<Button variant="default" size="sm" class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 print:hidden" disabled={ending} onclick={endEvent}
 						>{event.timestamp_out ? "Update end" : "End event"}</Button
 					>
