@@ -1,5 +1,15 @@
 # broadcast-event-logger
 
+## 0.4.0
+
+### Minor Changes
+
+- 21bd0e6: Add event out points with card controls, an event-update API, and duration-aware CSV and DaVinci Resolve exports. Event creation now uses `timestamp_in` instead of `timestamp`.
+
+### Patch Changes
+
+- d160359: Add clearer instructions for connection env vars
+
 ## 0.3.0
 
 ### Minor Changes
