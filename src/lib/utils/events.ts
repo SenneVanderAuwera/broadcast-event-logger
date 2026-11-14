@@ -15,7 +15,7 @@ export async function createNewEvent(
       .create({
         recording: recordingId,
         type,
-        timestamp: timestamp.toISO(),
+        timestamp_in: timestamp.toISO(),
         message,
       });
     return RecordingEventsResponse;

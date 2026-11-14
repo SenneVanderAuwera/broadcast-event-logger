@@ -6,7 +6,7 @@ import { ClientResponseError } from "pocketbase";
 
 type RequestBodyParams = {
   title?: string;
-  timestamp?: string;
+  timestamp_in?: string;
   message?: string;
   type?: "info" | "warning" | "error";
   color?: string;
@@ -18,11 +18,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   if (!requestBody.title) requestBody.title = "New event";
   if (!requestBody.type) requestBody.type = "info";
   if (!requestBody.message) requestBody.message = "";
-  if (!requestBody.timestamp) {
-    requestBody.timestamp = DateTime.now().toSQL();
+  if (!requestBody.timestamp_in) {
+    requestBody.timestamp_in = DateTime.now().toSQL();
   } else {
-    requestBody.timestamp = DateTime.fromISO(
-      requestBody.timestamp
+    requestBody.timestamp_in = DateTime.fromISO(
+      requestBody.timestamp_in
     ).toSQL() as string;
   }
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         type: requestBody.type,
         message: requestBody.message,
         color: requestBody.color,
-        timestamp: requestBody.timestamp,
+        timestamp_in: requestBody.timestamp_in,
       });
     return Response.json({ message: "Event created", data: RecordingEventsResponse });
   } catch (err) {
