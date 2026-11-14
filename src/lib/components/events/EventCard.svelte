@@ -20,7 +20,7 @@
 	let color = $derived(parseColor(event.color));
 	const defaultColors = { info: "#1447e6", warning: "#d08700", error: "#c10007" };
 
-	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp)));
+	let duration = $derived(getRelativeDuration(DateTime.fromSQL(recording.start), DateTime.fromSQL(event.timestamp_in)));
 
 	let isHovered = $state(false);
 
@@ -54,7 +54,7 @@
 				{#if !disabled}
 					<input type="color" aria-label="Event color" class="size-8 cursor-pointer print:hidden" bind:value={() => color ?? defaultColors[type], (value) => (event.color = value)} onchange={handleInputChange} />
 				{/if}
-				<span> {DateTime.fromSQL(event.timestamp).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+				<span> {DateTime.fromSQL(event.timestamp_in).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
 			</div>
 		</header>
 

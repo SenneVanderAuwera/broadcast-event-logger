@@ -11,7 +11,7 @@ function parseDateTime(value: string) {
 }
 
 function getEventColor(type: RecordingEventsResponse["type"], color?: string) {
-  if(color) return color;
+  if (color) return color;
   if (type === "warning") return "Yellow";
   if (type === "error") return "Red";
   return "Blue";
@@ -29,7 +29,7 @@ export function exportRecordingEventsCsv(
   if (!recordingStart.isValid) return false;
 
   const rows = events.map((event) => {
-    const eventTimestamp = parseDateTime(event.timestamp);
+    const eventTimestamp = parseDateTime(event.timestamp_in);
     const relativeTimestamp = eventTimestamp.isValid
       ? getRelativeDuration(recordingStart, eventTimestamp).toFormat("hh:mm:ss")
       : "";
