@@ -17,7 +17,7 @@ export const load = (async ({ params, fetch }) => {
       .getFullList({
         filter: `recording="${params.id}"`,
         expand: "",
-        sort: "timestamp",
+        sort: "timestamp_in",
         fetch,
       });
 

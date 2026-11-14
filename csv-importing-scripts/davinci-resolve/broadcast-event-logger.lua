@@ -160,7 +160,8 @@ local function timecode_to_frames(tc, fps)
 end
 
 local clip_props = selected_clip:GetClipProperty()
-local fps = math.floor((tonumber(clip_props["FPS"]) or 25) + 0.5)
+local clip_fps = tonumber(clip_props["FPS"]) or 25
+local fps = math.floor(clip_fps + 0.5)
 local start_frames = timecode_to_frames(clip_props["Start TC"] or clip_props["Start Timecode"], fps) or 0
 local duration_frames = tonumber(clip_props["Frames"])
 local end_frame = duration_frames and (duration_frames - 1)
@@ -170,8 +171,9 @@ local added, skipped, line_number = 0, 0, 0
 for line in io.lines(csv_path) do
     line_number = line_number + 1
     if line_number > 1 and line:find("%S") then
-        local fields = parse_csv_line(line)
+        local fields = parse_csv_line(line:gsub("\r$", ""))
         local color, event_name, event_desc, timecode = fields[1], fields[2], fields[3], fields[4]
+        local duration_seconds = fields[7] and fields[7] ~= "" and tonumber(fields[7])
         local frames = timecode_to_frames(timecode, fps)
 
         -- The CSV timecode may be relative to the clip, or absolute (needs the clip's start TC subtracted)
@@ -184,11 +186,17 @@ for line in io.lines(csv_path) do
             end
         end
 
-        if frame_id then
-            selected_clip:AddMarker(frame_id, marker_color(color), event_name or "", event_desc or "", 1)
+        local duration = duration_seconds and math.max(1, math.floor(duration_seconds * clip_fps + 0.5)) or 1
+        if fields[7] and fields[7] ~= "" and (not duration_seconds or duration_seconds < 0) then
+            print(string.format("Row %d: invalid duration '%s', skipped.", line_number, fields[7]))
+            skipped = skipped + 1
+        elseif frame_id and end_frame and frame_id + duration - 1 > end_frame then
+            print(string.format("Row %d: marker extends beyond the clip, skipped.", line_number))
+            skipped = skipped + 1
+        elseif frame_id and selected_clip:AddMarker(frame_id, marker_color(color), event_name or "", event_desc or "", duration) then
             added = added + 1
         else
-            print(string.format("Row %d: could not place timecode '%s', skipped.", line_number, tostring(timecode)))
+            print(string.format("Row %d: could not add marker at timecode '%s', skipped.", line_number, tostring(timecode)))
             skipped = skipped + 1
         end
     end

@@ -107,7 +107,8 @@ export type RecordingEventsRecord = {
 	id: string
 	message?: string
 	recording: RecordIdString
-	timestamp: IsoDateString
+	timestamp_in: IsoDateString
+	timestamp_out?: IsoDateString
 	title: string
 	type: RecordingEventsTypeOptions
 	updated: IsoAutoDateString
