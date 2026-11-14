@@ -54,7 +54,12 @@
 				{#if !disabled}
 					<input type="color" aria-label="Event color" class="size-8 cursor-pointer print:hidden" bind:value={() => color ?? defaultColors[type], (value) => (event.color = value)} onchange={handleInputChange} />
 				{/if}
-				<span> {DateTime.fromSQL(event.timestamp_in).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)} </span>
+				<span>
+					{DateTime.fromSQL(event.timestamp_in).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}
+					{#if event.timestamp_out}
+						- {DateTime.fromSQL(event.timestamp_out).toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}
+					{/if}
+				</span>
 			</div>
 		</header>
 
