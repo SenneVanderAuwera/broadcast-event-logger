@@ -53,6 +53,7 @@
 
 	onMount(() => {
 		pb.collection(Collections.RecordingEvents).subscribe<RecordingEventsResponse>("*", ({ action, record }) => {
+			if (record.recording !== recording.id) return;
 			if (action === "create") recordingController.recordingEvents.push(record);
 			if (action === "delete") recordingController.recordingEvents = recordingController.recordingEvents.filter((e) => e.id !== record.id);
 			if (action === "update") recordingController.recordingEvents = recordingController.recordingEvents.map((e) => (e.id === record.id ? record : e));
