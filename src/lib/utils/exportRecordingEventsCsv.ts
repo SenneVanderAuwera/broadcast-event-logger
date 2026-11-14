@@ -28,8 +28,18 @@ export function exportRecordingEventsCsv(
   const recordingStart = parseDateTime(recording.start);
   if (!recordingStart.isValid) return false;
 
-  const rows = events.map((event) => {
+  const rows: string[] = [];
+  for (const event of events) {
     const eventTimestamp = parseDateTime(event.timestamp_in);
+    const eventTimestampOut = event.timestamp_out
+      ? parseDateTime(event.timestamp_out)
+      : null;
+    if (
+      eventTimestampOut &&
+      (!eventTimestamp.isValid ||
+        !eventTimestampOut.isValid ||
+        eventTimestampOut.toMillis() < eventTimestamp.toMillis())
+    ) return false;
     const relativeTimestamp = eventTimestamp.isValid
       ? getRelativeDuration(recordingStart, eventTimestamp).toFormat("hh:mm:ss")
       : "";
@@ -37,19 +47,25 @@ export function exportRecordingEventsCsv(
       ? eventTimestamp.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)
       : "";
 
-    return [
+    rows.push([
       getEventColor(event.type, event.color),
       event.title,
       event.message,
       relativeTimestamp,
       actualTimestamp,
+      eventTimestampOut?.isValid
+        ? eventTimestampOut.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)
+        : "",
+      eventTimestampOut
+        ? String(eventTimestampOut.diff(eventTimestamp).as("seconds"))
+        : "",
     ]
       .map((value) => escapeCsvValue(value ?? ""))
-      .join(",");
-  });
+      .join(","));
+  }
 
   const csv = [
-    ["Color", "Event name", "Event description", "Timecode", "Timestamp"]
+    ["Color", "Event name", "Event description", "Timecode", "Timestamp", "Timestamp out", "Duration (seconds)"]
       .map(escapeCsvValue)
       .join(","),
     ...rows,
